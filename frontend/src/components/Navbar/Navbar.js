@@ -22,12 +22,11 @@ function Navbar() {
     <div className="navbar-container">
       <NavLink to="/" className="navbar-logo-link">
         <div className="navbar-logo">
-          <div className="navbar-logo-icon-container">
-            <div className="navbar-logo-icon-placeholder"></div>
-          </div>
-          <div className="navbar-logo-text">
-            <span className="logo-text-main">IzjasniSe</span>
-          </div>
+          <img
+              src="/logo.png" 
+              alt="IzjasniSe Logo"
+              className="navbar-logo-image" 
+          />
         </div>
       </NavLink>
 
