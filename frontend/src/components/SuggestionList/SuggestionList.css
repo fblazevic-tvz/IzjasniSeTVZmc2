@@ -1,0 +1,20 @@
+/* src/components/SuggestionList/SuggestionList.css */
+
+.suggestion-list-container {
+    display: grid;
+    /* Use same grid setup */
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    width: 100%;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .no-suggestions-message { /* Specific class for empty message */
+      grid-column: 1 / -1; /* Span all columns */
+      width: 100%;
+      text-align: center;
+      padding: 40px;
+      font-size: 1.1rem;
+      color: #6c757d;
+  }
