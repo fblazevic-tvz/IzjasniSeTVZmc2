@@ -111,7 +111,7 @@ function CreateSuggestionPage() {
 
   return (
     <div className="create-suggestion-container form-container">
-      <h1 className="form-title">Kreiraj Prijedlog za Natječaj:</h1>
+      <h1 className="form-title">Stvori prijedlog za ovaj natječaj:</h1>
       <h2 className="form-subtitle">{proposal.name}</h2>
 
       <form onSubmit={handleSubmit} noValidate>
@@ -122,7 +122,7 @@ function CreateSuggestionPage() {
         )}
 
         <div className="form-group">
-          <label htmlFor="suggestion-name">Naziv Prijedloga:</label>
+          <label htmlFor="suggestion-name">Naziv prijedloga:</label>
           <input
             type="text"
             id="suggestion-name"
@@ -149,7 +149,7 @@ function CreateSuggestionPage() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="suggestion-cost">Procijenjeni Trošak (BAM):</label>
+          <label htmlFor="suggestion-cost">Procijenjeni trošak (EUR):</label>
           <input
             type="number"
             id="suggestion-cost"
@@ -174,7 +174,7 @@ function CreateSuggestionPage() {
             required
             disabled={isSubmitting || locations.length === 0}
           >
-            <option value="" disabled>-- Odaberi Lokaciju --</option>
+            <option value="" disabled>-- Odaberi lokaciju --</option>
             {locations.length === 0 && <option disabled>Nema dostupnih lokacija</option>}
             {locations.map(loc => (
               <option key={loc.id} value={loc.id}>

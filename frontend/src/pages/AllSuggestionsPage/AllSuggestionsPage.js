@@ -135,7 +135,7 @@ function AllSuggestionsPage() {
 
   return (
     <>
-      <h1 className="all-suggestions-title">Svi Prijedlozi</h1>
+      <h1 className="all-suggestions-title">Svi prijedlozi</h1>
 
       <div className="filter-controls-container">
         <div className="filter-group">

@@ -16,7 +16,7 @@ function Sidebar() {
           <li>
             <NavLink to="/dashboard" className={getNavLinkClass} end> 
               <SuggestionIcon className="sidebar-icon" />
-               Moji Prijedlozi 
+               Moji prijedlozi 
             </NavLink>
           </li>
            <li>

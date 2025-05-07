@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import NoticeCard from '../NoticeCard/NoticeCard';
-import './NoticeList.css'; // CSS for the list layout
+import './NoticeList.css';
 
 function NoticeList({ notices }) {
   if (!notices || notices.length === 0) {

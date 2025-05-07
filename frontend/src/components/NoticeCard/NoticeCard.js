@@ -52,7 +52,7 @@ function NoticeCard({ notice }) {
             </div>
             <div className="notice-card-buttons-group">
                 <button onClick={goToDetails} className="notice-card-button-secondary">
-                    Pročitaj Više
+                    Pročitaj više
                 </button>
             </div>
         </div>

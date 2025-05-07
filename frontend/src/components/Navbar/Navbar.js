@@ -53,7 +53,7 @@ function Navbar() {
           to="/about"
           className={({ isActive }) => "nav-link" + (isActive ? " active" : "")}
         >
-          O Nama
+          O nama
         </NavLink>
 
         {isAuthenticated && <div className="nav-spacer"></div>}

@@ -27,14 +27,14 @@ function ProposalDetailInfo({ proposal }) {
     
     return (
         <div className="proposal-detail-info">
-            <h2>Detalji Natječaja</h2>
+            <h2>Detalji natječaja</h2>
             <div className="info-grid">
                 <div className="info-item">
                     <span className="info-label">Status:</span>
                     <span className="info-value status">{status}</span>
                 </div>
                 <div className="info-item">
-                    <span className="info-label">Maksimalni Budžet:</span>
+                    <span className="info-label">Maksimalni budžet:</span>
                     <span className="info-value budget">{formatCurrencyEuroCroatian(maxBudget)}</span>
                 </div>
                  <div className="info-item">

@@ -62,9 +62,14 @@ function ProposalDetailPage() {
                      )}
                 </div>
                 <div className="header-image-area">
-                    <div className="header-image-placeholder">
-                        <span>[Header Image Placeholder]</span>
-                    </div>
+                <div className="proposal-card-image-container">
+                <img
+                    src="/proposal.jpg"
+                    alt="Vizualni prikaz za natječaj"
+                    className="proposal-card-image"
+                    loading="lazy"
+                />
+            </div>
                 </div>
             </section>
         );

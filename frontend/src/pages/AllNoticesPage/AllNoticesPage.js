@@ -110,11 +110,11 @@ function AllNoticesPage() {
 
   return (
     <>
-      <h1 className="all-notices-title">Sve Obavijesti</h1>
+      <h1 className="all-notices-title">Sve obavijesti</h1>
 
       <div className="filter-controls-container">
         <div className="filter-group">
-          <label htmlFor="search-term" className="filter-label">Pretraga Obavijesti (Naslov/Sadržaj):</label>
+          <label htmlFor="search-term" className="filter-label">Pretraga obavijesti (Naslov/Sadržaj):</label>
           <input
             type="text"
             id="search-term"
@@ -127,7 +127,7 @@ function AllNoticesPage() {
         </div>
 
         <div className="filter-group">
-          <label htmlFor="proposal-term" className="filter-label">Povezani Natječaj (Naziv):</label>
+          <label htmlFor="proposal-term" className="filter-label">Povezani natječaj (Naziv):</label>
           <input
             type="text"
             id="proposal-term"

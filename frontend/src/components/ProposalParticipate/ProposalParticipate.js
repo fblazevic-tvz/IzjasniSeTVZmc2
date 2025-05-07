@@ -20,7 +20,7 @@ function ProposalParticipate({ proposalId }) {
                 className="button-primary participate-button"
                 style={!proposalId ? { pointerEvents: 'none', opacity: 0.65 } : {}}
             >
-                Kreiraj Prijedlog za ovaj Natječaj
+                Stvori prijedlog za ovaj natječaj
             </Link>
 
             <div className="attachments-section">

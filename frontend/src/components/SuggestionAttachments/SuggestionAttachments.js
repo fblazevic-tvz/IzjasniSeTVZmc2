@@ -1,18 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import './SuggestionAttachments.css'; // Create or reuse styles
+import './SuggestionAttachments.css';
 
-function SuggestionAttachments({ suggestionId, attachments }) { // Accept attachments array
+function SuggestionAttachments({ suggestionId, attachments }) {
 
-    // Use passed attachments or placeholder if needed
     const displayAttachments = [
         { id: 1, name: `Attachment_for_suggestion_${suggestionId}_1.pdf`, url: '#' },
         { id: 2, name: `Plan_suggestion_${suggestionId}.jpg`, url: '#' },
     ];
 
     return (
-        <div className="suggestion-attachments"> {/* Specific class */}
-            <h2>Priloženi Dokumenti</h2>
+        <div className="suggestion-attachments">
+            <h2>Priloženi dokumenti</h2>
 
             <div className="attachments-list-container">
                 {displayAttachments.length > 0 ? (
@@ -21,7 +20,7 @@ function SuggestionAttachments({ suggestionId, attachments }) { // Accept attach
                             <li key={att.id} className="attachment-item">
                                 <span className="attachment-icon">📎</span>
                                 <a href={att.url || '#'} target="_blank" rel="noopener noreferrer" className="attachment-link">
-                                    {att.name || 'Attachment'} {/* Use name from data */}
+                                    {att.name || 'Attachment'}
                                 </a>
                             </li>
                         ))}
@@ -36,10 +35,10 @@ function SuggestionAttachments({ suggestionId, attachments }) { // Accept attach
 
 SuggestionAttachments.propTypes = {
     suggestionId: PropTypes.number,
-    attachments: PropTypes.arrayOf(PropTypes.shape({ // Expect attachments array
+    attachments: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
-        name: PropTypes.string, // Adjust based on your Attachment entity
-        url: PropTypes.string, // Adjust based on your Attachment entity
+        name: PropTypes.string,
+        url: PropTypes.string,
     })),
 };
 

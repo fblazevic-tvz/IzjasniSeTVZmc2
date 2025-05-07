@@ -1,4 +1,3 @@
-// src/components/ProposalCard/ProposalCard.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import './ProposalCard.css';
@@ -50,7 +49,7 @@ function ProposalCard({ proposal }) {
                     <p className="proposal-card-category">{cityName}</p>
                     <h3 className="proposal-card-title">{name}</h3>
                     <p className="proposal-card-category status">Status: {status}</p>
-                    <p className="proposal-card-category budget">Budget: {formatCurrencyEuroCroatian(maxBudget)}</p>
+                    <p className="proposal-card-category budget">Budžet: {formatCurrencyEuroCroatian(maxBudget)}</p>
                 </div>
 
                 <p className="proposal-card-paragraph">{shortDescription}</p>

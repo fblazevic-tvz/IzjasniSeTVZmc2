@@ -31,10 +31,10 @@ FaqItem.propTypes = {
 
 function AboutPage() {
   const faqData = [
-    { id: 1, question: "Kako mogu predati svoj prijedlog?", answer: "Prijedlog možete predati putem obrasca dostupnog na stranici 'Novi Prijedlog' nakon što se prijavite u sustav. Potrebno je ispuniti sva obavezna polja uključujući naziv, opis, lokaciju i procijenjeni trošak." },
+    { id: 1, question: "Kako mogu predati svoj prijedlog?", answer: "Prijedlog možete predati putem obrasca dostupnog na stranici 'Novi prijedlog' nakon što se prijavite u sustav. Potrebno je ispuniti sva obavezna polja uključujući naziv, opis, lokaciju i procijenjeni trošak." },
     { id: 2, question: "Tko može glasati za prijedloge?", answer: "Pravo glasa imaju svi registrirani korisnici platforme koji su potvrđeni kao stanovnici grada za koji se prijedlog odnosi. Detalji o procesu verifikacije mogu se naći u pravilima korištenja." },
     { id: 3, question: "Kako se odabiru pobjednički prijedlozi?", answer: "Pobjednički prijedlozi odabiru se na temelju broja glasova prikupljenih tijekom perioda glasanja, uzimajući u obzir raspoloživi budžet za određeni natječaj i provjeru izvedivosti od strane gradskih službi." },
-    { id: 4, question: "Gdje mogu pratiti status svog prijedloga?", answer: "Status vašeg prijedloga možete pratiti na stranici 'Moji Prijedlozi' unutar vašeg korisničkog profila. Statusi uključuju 'Predano', 'U razmatranju', 'Odobreno', 'Odbijeno', 'Implementirano'." },
+    { id: 4, question: "Gdje mogu pratiti status svog prijedloga?", answer: "Status vašeg prijedloga možete pratiti na stranici 'Moji prijedlozi' unutar vašeg korisničkog profila. Statusi uključuju 'Predano', 'U razmatranju', 'Odobreno', 'Odbijeno', 'Implementirano'." },
     { id: 5, question: "Kako mogu kontaktirati administratore?", answer: "Za kontakt s administratorima platforme, molimo koristite kontakt formu dostupnu na stranici 'Kontakt' ili pošaljite email na info@izjasnise.hr (primjer adrese)." }
   ];
 
@@ -43,7 +43,7 @@ function AboutPage() {
       <section className="about-hero-section">
         <div className="about-hero-content">
           <div className="about-hero-text">
-            <h1 className="about-hero-headline">O Nama</h1>
+            <h1 className="about-hero-headline">O nama</h1>
             <p className="about-hero-paragraph">
               Dobrodošli na IzjasniSe, platformu posvećenu poticanju građanskog
               angažmana i poboljšanju naših lokalnih zajednica. Vjerujemo u snagu
@@ -68,7 +68,7 @@ function AboutPage() {
       <section className="about-team-section">
         <div className="section-text-container">
           <div className="section-text-top">
-            <h2 className="section-secondary-headline">Naš Tim</h2>
+            <h2 className="section-secondary-headline">Naš tim</h2>
           </div>
           <p className="section-paragraph">
             Upoznajte ljude koji stoje iza platforme IzjasniSe, posvećene transparentnosti i boljitku zajednice.
@@ -107,7 +107,7 @@ function AboutPage() {
       <section className="about-faq-section">
         <div className="section-text-container">
           <div className="section-text-top">
-            <h2 className="section-secondary-headline">Često Postavljana Pitanja</h2>
+            <h2 className="section-secondary-headline">Često postavljana pitanja</h2>
           </div>
         </div>
         <div className="faq-list">

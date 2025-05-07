@@ -34,19 +34,19 @@ function NoticeDetailInfo({ notice }) {
     return (
         <div className="notice-detail-layout">
             <div className="notice-content-main">
-                <h3>Sadržaj Obavijesti</h3>
+                <h3>Sadržaj obavijesti</h3>
                 <p className="notice-content-text">{content}</p>
                  <p className="notice-meta">Objavljeno: {formatDateCroatian(createdAt)} | Autor: {noticeModeratorName}</p>
             </div>
 
             <aside className="proposal-info-sidebar">
-                <h4>Informacije o Natječaju</h4>
+                <h4>Informacije o natječaju</h4>
                 <div className="sidebar-info-item">
                     <span className="sidebar-info-label">Natječaj:</span>
                     <span className="sidebar-info-value">{proposalName}</span>
                 </div>
                 <div className="sidebar-info-item">
-                    <span className="sidebar-info-label">Status Natječaja:</span>
+                    <span className="sidebar-info-label">Status natječaja:</span>
                     <span className="sidebar-info-value">{proposalStatus}</span>
                 </div>
                 <div className="sidebar-info-item">

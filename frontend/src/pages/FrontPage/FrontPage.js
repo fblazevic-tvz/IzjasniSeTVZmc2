@@ -70,6 +70,7 @@ function FrontPage() {
       <CallToActionSection />
 
       <section className="novi-natjecaji-section">
+      <h2 className="section-secondary-headline">Natječaji</h2>
         <div className="proposal-list-area">
           {isLoadingProposals && <LoadingSpinner />}
           {errorProposals && <div className="alert alert-danger">Error: {errorProposals}</div>}
@@ -80,14 +81,13 @@ function FrontPage() {
           )}
         </div>
         <button onClick={() => navigate('/proposals')} className="section-cta-button button-primary">
-          Svi Natječaji
+          Svi natječaji
         </button>
       </section>
 
       <section className="novosti-section">
         <div className="section-text-container">
           <div className="section-text-top">
-            <span className="section-caption">Obavijesti</span>
             <h2 className="section-secondary-headline">Novosti</h2>
           </div>
         </div>
@@ -103,7 +103,7 @@ function FrontPage() {
         </div>
 
         <button onClick={goToAllNotices} className="section-cta-button button-primary">
-          Sve Obavijesti
+          Sve obavijesti
         </button>
       </section>
     </div>

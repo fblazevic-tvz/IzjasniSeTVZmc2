@@ -29,7 +29,7 @@ function SuggestionDetailInfo({ suggestion }) {
     return (
         <div className="suggestion-detail-layout"> 
             <div className="suggestion-content-main">
-                <h3>Opis Prijedloga</h3>
+                <h3>Opis prijedloga</h3>
                 <p className="suggestion-content-text">{description}</p>
                  <p className="suggestion-meta">
                      Podneseno: {formatDateCroatian(createdAt)} | Autor: {authorName}
@@ -43,11 +43,11 @@ function SuggestionDetailInfo({ suggestion }) {
                     <span className="sidebar-info-value status">{status}</span>
                 </div>
                  <div className="sidebar-info-item">
-                    <span className="sidebar-info-label">Procijenjeni Trošak:</span>
+                    <span className="sidebar-info-label">Procijenjeni trošak:</span>
                     <span className="sidebar-info-value budget">{formatCurrencyEuroCroatian(estimatedCost)}</span>
                 </div>
                  <div className="sidebar-info-item">
-                    <span className="sidebar-info-label">Broj Glasova:</span>
+                    <span className="sidebar-info-label">Broj glasova:</span>
                     <span className="sidebar-info-value votes">{voteCount}</span>
                 </div>
                 <div className="sidebar-info-item">
@@ -57,7 +57,7 @@ function SuggestionDetailInfo({ suggestion }) {
 
                 {proposal?.id && (
                     <div className="related-proposal-info">
-                         <h5>Povezani Natječaj</h5>
+                         <h5>Povezani natječaj</h5>
                          <p>
                              <Link to={`/proposals/${proposal.id}`} className="sidebar-link-to-proposal">
                                  {proposalName}

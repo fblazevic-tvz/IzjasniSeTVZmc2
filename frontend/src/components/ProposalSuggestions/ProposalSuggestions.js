@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { fetchSuggestionsByProposalId } from '../../services/suggestionService'; // Specific service call
+import { fetchSuggestionsByProposalId } from '../../services/suggestionService';
 import SuggestionList from '../SuggestionList/SuggestionList';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import './ProposalSuggestions.css';
@@ -34,7 +34,7 @@ useEffect(() => {
 
 return (
     <div className="proposal-suggestions">
-        <h2>Povezani Prijedlozi</h2>
+        <h2>Povezani prijedlozi</h2>
 
         {isLoading && <LoadingSpinner />}
         {error && <div className="alert alert-danger">Error: {error}</div>}

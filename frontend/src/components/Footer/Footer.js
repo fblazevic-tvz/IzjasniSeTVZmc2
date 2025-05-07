@@ -4,7 +4,7 @@ import './Footer.css';
 function Footer() {
   return (
     <footer className="app-footer">
-      <p>© {new Date().getFullYear()} MyApp. All rights reserved.</p>
+      <p>© {new Date().getFullYear()} IzjasniSe. All rights reserved.</p>
     </footer>
   );
 }

@@ -32,7 +32,7 @@ function ProposalNotices({ proposalId }) {
 
     return (
         <div className="proposal-notices"> 
-            <h2>Povezane Obavijesti</h2> 
+            <h2>Povezane obavijesti</h2> 
 
             {isLoading && <LoadingSpinner />}
             {error && <div className="alert alert-danger">Error: {error}</div>}

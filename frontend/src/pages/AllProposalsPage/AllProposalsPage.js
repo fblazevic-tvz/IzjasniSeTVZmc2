@@ -130,7 +130,7 @@ function AllProposalsPage() {
 
   return (
     <>
-      <h1 className="all-proposals-title">Svi Natječaji</h1>
+      <h1 className="all-proposals-title">Svi natječaji</h1>
 
       <div className="filter-controls-container">
         <div className="filter-group">
@@ -165,7 +165,7 @@ function AllProposalsPage() {
         </div>
 
         <div className="filter-group">
-          <label htmlFor="max-budget" className="filter-label">Maksimalni Budžet (EUR):</label>
+          <label htmlFor="max-budget" className="filter-label">Maksimalni budžet (EUR):</label>
           <input
             type="number"
             id="max-budget"

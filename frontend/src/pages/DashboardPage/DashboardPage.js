@@ -83,14 +83,14 @@ function DashboardPage() {
     <div className="dashboard-layout">
       <Sidebar />
       <main className="dashboard-main-content">
-        <h1>Moja Upravljačka Ploča</h1>
+        <h1>Dashboard</h1>
         {user ? (
           <p className="welcome-message">Dobrodošli!</p>
         ) : (
           <p>Učitavanje...</p>
         )}
         <section className="dashboard-section">
-          <h2>Moji Prijedlozi</h2>
+          <h2>Moji prijedlozi</h2>
           {(isLoading || isDeleting) && <LoadingSpinner />}
           {error && <div className="alert alert-danger">Greška: {error}</div>}
           {!isLoading && !error && (

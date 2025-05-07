@@ -111,12 +111,12 @@ function EditSuggestionPage() {
   };
 
   if (isLoading) return <LoadingSpinner />;
-  if (error) return <div className="alert alert-danger form-container">Greška: {error} <Link to="/dashboard">Povratak na ploču</Link></div>;
+  if (error) return <div className="alert alert-danger form-container">Greška: {error} <Link to="/dashboard">Povratak na dashboard</Link></div>;
   if (!originalSuggestion) return <div className="alert alert-warning form-container">Nije moguće učitati podatke prijedloga. <Link to="/dashboard">Povratak</Link></div>;
 
   return (
     <div className="edit-suggestion-container form-container">
-      <h1 className="form-title">Uredi Prijedlog</h1>
+      <h1 className="form-title">Uredi prijedlog</h1>
       <h2 className="form-subtitle">{originalSuggestion?.name || 'Prijedlog'}</h2>
 
       <form onSubmit={handleSubmit} noValidate>
@@ -127,7 +127,7 @@ function EditSuggestionPage() {
         )}
 
         <div className="form-group">
-          <label htmlFor="suggestion-name">Naziv Prijedloga:</label>
+          <label htmlFor="suggestion-name">Naziv prijedloga:</label>
           <input
             type="text"
             id="suggestion-name"
@@ -154,7 +154,7 @@ function EditSuggestionPage() {
         </div>
 
         <div className="form-group">
-          <label htmlFor="suggestion-cost">Procijenjeni Trošak (BAM):</label>
+          <label htmlFor="suggestion-cost">Procijenjeni trošak (EUR):</label>
           <input
             type="number"
             id="suggestion-cost"
@@ -179,7 +179,7 @@ function EditSuggestionPage() {
             required
             disabled={isSubmitting || locations.length === 0}
           >
-            <option value="" disabled>-- Odaberi Lokaciju --</option>
+            <option value="" disabled>-- Odaberi lokaciju --</option>
             {locations.map(loc => (
               <option key={loc.id} value={loc.id}>
                 {loc.name} {loc.address ? `(${loc.address})` : ''}

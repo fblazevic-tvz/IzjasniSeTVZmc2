@@ -11,7 +11,7 @@ function NoticeAttachments({ noticeId }) {
 
     return (
         <div className="notice-attachments">
-            <h2>Priloženi Dokumenti</h2>
+            <h2>Priloženi dokumenti</h2>
 
             <div className="attachments-list-container">
                 {attachments.length > 0 ? (

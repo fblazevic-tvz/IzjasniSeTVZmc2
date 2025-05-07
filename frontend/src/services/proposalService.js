@@ -1,5 +1,4 @@
-// src/services/proposalService.js
-import { api } from './api'; // Use the configured Axios instance
+import { api } from './api';
 
 
 function isAxiosError(error) {
