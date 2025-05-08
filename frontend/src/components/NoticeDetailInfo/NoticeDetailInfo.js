@@ -54,7 +54,7 @@ function NoticeDetailInfo({ notice }) {
                     <span className="sidebar-info-value">{formatCurrencyEuroCroatian(maxBudget)}</span>
                 </div>
                  <div className="sidebar-info-item">
-                    <span className="sidebar-info-label">Period Prijave:</span>
+                    <span className="sidebar-info-label">Period prijave:</span>
                     <span className="sidebar-info-value dates">{formatDateCroatian(submissionStart)} - {formatDateCroatian(submissionEnd)}</span>
                 </div>
                  <div className="sidebar-info-item">
@@ -62,7 +62,7 @@ function NoticeDetailInfo({ notice }) {
                     <span className="sidebar-info-value">{cityName} ({cityPostcode})</span>
                 </div>
                  <div className="sidebar-info-item">
-                    <span className="sidebar-info-label">Moderator Natječaja:</span>
+                    <span className="sidebar-info-label">Moderator natječaja:</span>
                     <span className="sidebar-info-value">{proposalModeratorName}</span>
                 </div>
 
