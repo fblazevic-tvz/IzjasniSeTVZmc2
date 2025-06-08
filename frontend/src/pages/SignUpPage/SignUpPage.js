@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { registerUser } from '../../services/authService';
-import './SignUpPage.css'; 
+import './SignUpPage.css';
 
 function SignUpPage() {
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState(''); 
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(null);
@@ -14,7 +14,7 @@ function SignUpPage() {
   const navigate = useNavigate();
 
   const isValidEmail = (email) => {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
 
   const handleSubmit = async (event) => {
@@ -22,27 +22,27 @@ function SignUpPage() {
     setError(null);
     setSuccess(null);
 
-    if (!username.trim() || !email.trim() || !password) { 
-      setError('Username, Email, and Password are required.');
+    if (!username.trim() || !email.trim() || !password) {
+      setError('Korisničko ime, email i lozinka su obavezni.');
       return;
     }
-     if (!isValidEmail(email)) {
-         setError('Please enter a valid email address.');
-         return;
-     }
+    if (!isValidEmail(email)) {
+      setError('Molimo unesite važeću email adresu.');
+      return;
+    }
     if (password !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError('Lozinke se ne podudaraju.');
       return;
     }
 
     setLoading(true);
 
     try {
-      await registerUser({ username: username, email:email, password:password });
-      setSuccess('Registration successful! You can now log in.');
+      await registerUser({ username: username, email: email, password: password });
+      setSuccess('Registracija uspješna! Sada se možete prijaviti.');
 
       setUsername('');
-      setEmail(''); 
+      setEmail('');
       setPassword('');
       setConfirmPassword('');
 
@@ -51,22 +51,22 @@ function SignUpPage() {
       }, 1000);
 
     } catch (err) {
-      setError(err.message || 'Registration failed. Please try again.');
+      setError(err.message || 'Registracija nije uspjela. Molimo pokušajte ponovno.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="signup-page-container">
-      <div className="signup-form-box">
-        <h2>Sign Up</h2>
-        <form onSubmit={handleSubmit} noValidate>
-          {error && <div className="alert alert-danger">{error}</div>}
-          {success && <div className="alert alert-success">{success}</div>}
+    <main className="signup-page-container">
+      <section className="signup-form-box" aria-labelledby="signup-heading">
+        <h2 id="signup-heading">Registracija</h2>
+        <form onSubmit={handleSubmit} noValidate aria-busy={loading}>
+          {error && <div className="alert alert-danger" role="alert">{error}</div>}
+          {success && <div className="alert alert-success" role="status">{success}</div>}
 
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Korisničko ime</label>
             <input
               type="text"
               id="username"
@@ -83,7 +83,7 @@ function SignUpPage() {
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
-              type="email" 
+              type="email"
               id="email"
               className="form-control"
               required
@@ -95,7 +95,7 @@ function SignUpPage() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Lozinka</label>
             <input
               type="password"
               id="password"
@@ -108,7 +108,7 @@ function SignUpPage() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
+            <label htmlFor="confirmPassword">Potvrdite lozinku</label>
             <input
               type="password"
               id="confirmPassword"
@@ -125,14 +125,19 @@ function SignUpPage() {
             className="button-primary signup-button"
             disabled={loading || success}
           >
-            {loading ? 'Creating Account...' : 'Sign Up'}
+            {loading ? 'Stvaranje korisničkog računa...' : 'Registracija'}
           </button>
-          <div className="login-link">
-            Already have an account? <Link to="/login">Sign In</Link>
-          </div>
         </form>
-      </div>
-    </div>
+        <footer className="form-footer">
+          <div className="login-link">
+            Već imate račun? <Link to="/login">Prijavite se</Link>
+          </div>
+          <div className="navigation-options">
+            <Link to="/" className="home-link">← Natrag na početnu</Link>
+          </div>
+        </footer>
+      </section>
+    </main>
   );
 }
 

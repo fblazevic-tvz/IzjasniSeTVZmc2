@@ -12,12 +12,16 @@ namespace IzjasniSe.Api.Services
         private readonly AppDbContext _db;
         private readonly IUserService _userService;
         private readonly ICityService _cityService;
+        private readonly ILoggedInService _loggedInService;
+        private readonly IFileUploadService _fileUploadService;
 
-        public ProposalService(AppDbContext db, IUserService userService, ICityService cityService)
+        public ProposalService(AppDbContext db, IUserService userService, ICityService cityService, ILoggedInService loggedInService, IFileUploadService fileUploadService)
         {
             _db = db;
             _userService = userService;
             _cityService = cityService;
+            _loggedInService = loggedInService;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<IEnumerable<Proposal>> GetAllAsync()
@@ -27,6 +31,21 @@ namespace IzjasniSe.Api.Services
                             .Include(p => p.Moderator)
                             .AsNoTracking()
                             .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Proposal>> GetByModeratorIdAsync(int moderatorId)
+        {
+            var currentUserId = _loggedInService.GetCurrentUserId();
+            if (currentUserId != moderatorId)
+            {
+                return new List<Proposal>();
+            }
+            return await _db.Proposals
+                           .Where(p => p.ModeratorId == moderatorId)
+                           .Include(p => p.City)
+                           .Include(p => p.Moderator)
+                           .AsNoTracking()
+                           .ToListAsync();
         }
 
         public async Task<Proposal?> GetByIdAsync(int id)
@@ -43,8 +62,9 @@ namespace IzjasniSe.Api.Services
         {
             bool isValid = true;
             var foundUser = await _userService.GetByIdAsync(proposalCreateDto.ModeratorId);
+            var currentUserId = _loggedInService.GetCurrentUserId();
 
-            if (foundUser == null)
+            if (foundUser == null || currentUserId != foundUser.Id)
             {
                 isValid = false;
             }
@@ -86,20 +106,18 @@ namespace IzjasniSe.Api.Services
             if (existingProposal == null)
                 return false;
 
+            var currentUserId = _loggedInService.GetCurrentUserId();
+            
+            if (existingProposal.ModeratorId != currentUserId)
+            {
+                return false;
+            }
+
             if (proposalUpdateDto.CityId.HasValue)
             {
                 var foundCity = await _cityService.GetByIdAsync(proposalUpdateDto.CityId.Value);
 
                 if (foundCity == null)
-                {
-                    return false;
-                }
-            }
-
-            if (proposalUpdateDto.ModeratorId.HasValue)
-            {
-                var foundUser = await _userService.GetByIdAsync(proposalUpdateDto.ModeratorId.Value);
-                if (foundUser == null)
                 {
                     return false;
                 }
@@ -126,9 +144,6 @@ namespace IzjasniSe.Api.Services
             if (proposalUpdateDto.CityId.HasValue)
                 existingProposal.CityId = proposalUpdateDto.CityId.Value;
 
-            if (proposalUpdateDto.ModeratorId.HasValue)
-                existingProposal.ModeratorId = proposalUpdateDto.ModeratorId.Value;
-
             existingProposal.UpdatedAt = DateTime.UtcNow;
 
             _db.Proposals.Update(existingProposal);
@@ -139,16 +154,53 @@ namespace IzjasniSe.Api.Services
 
         public async Task<bool> DeleteAsync(int id)
         {
-            var existing = await _db.Proposals.FindAsync(id);
+            var existing = await _db.Proposals.Include(p=>p.Attachments).FirstOrDefaultAsync(p=> p.Id == id);
             if (existing == null) return false;
+
+            var currentUserId = _loggedInService.GetCurrentUserId();
+            
+            if (existing.ModeratorId != currentUserId)
+            {
+                return false;
+            }
 
             _db.Proposals.Remove(existing);
             await _db.SaveChangesAsync();
+
+            foreach(ProposalAttachment proposalAttachment in existing.Attachments) {
+                await _fileUploadService.DeleteFileAsync(proposalAttachment.FilePathOrUrl);
+            }
+
             return true;
         }
 
         public async Task<bool> ProposalExistsAsync(int id) {
             return await _db.Proposals.AnyAsync(p => p.Id == id);
+        }
+
+        public async Task<bool> UpdateProfileImageAsync(int id, string profileImageUrl)
+        {
+            var currentUserId = _loggedInService.GetCurrentUserId();
+            if (currentUserId == null)
+                return false;
+
+            var proposal = await _db.Proposals.FindAsync(id);
+            if (proposal == null)
+                return false;
+
+            if (proposal.ModeratorId != currentUserId)
+                return false;
+
+            if (!string.IsNullOrEmpty(proposal.ProfileImageUrl))
+            {
+                await _fileUploadService.DeleteFileAsync(proposal.ProfileImageUrl);
+            }
+
+            proposal.ProfileImageUrl = profileImageUrl;
+            proposal.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return true;
         }
     }
 }

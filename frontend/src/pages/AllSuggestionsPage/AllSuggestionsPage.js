@@ -15,6 +15,7 @@ function AllSuggestionsPage() {
   const [minCost, setMinCost] = useState('');
   const [locationTerm, setLocationTerm] = useState('');
   const [selectedCityId, setSelectedCityId] = useState('');
+  const [sortOrder, setSortOrder] = useState('newest');
 
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +30,7 @@ function AllSuggestionsPage() {
           fetchSuggestions(),
           fetchCities()
         ]);
-
+        
         const sortedSuggestions = suggestionsData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setAllSuggestions(sortedSuggestions);
         setCities(citiesData);
@@ -46,7 +47,7 @@ function AllSuggestionsPage() {
     loadInitialData();
   }, []);
 
-  const filteredSuggestions = useMemo(() => {
+  const processedSuggestions = useMemo(() => {
     let tempSuggestions = allSuggestions;
 
     if (searchTerm) {
@@ -56,14 +57,12 @@ function AllSuggestionsPage() {
         suggestion.description?.toLowerCase().includes(lowerSearchTerm)
       );
     }
-
     if (minCost && !isNaN(parseFloat(minCost))) {
       const cost = parseFloat(minCost);
       tempSuggestions = tempSuggestions.filter(suggestion =>
         suggestion.estimatedCost >= cost
       );
     }
-
     if (locationTerm) {
       const lowerLocationTerm = locationTerm.toLowerCase();
       tempSuggestions = tempSuggestions.filter(suggestion =>
@@ -71,7 +70,6 @@ function AllSuggestionsPage() {
         suggestion.location?.address?.toLowerCase().includes(lowerLocationTerm)
       );
     }
-
     if (selectedCityId && selectedCityId !== '') {
       const cityId = parseInt(selectedCityId, 10);
       tempSuggestions = tempSuggestions.filter(suggestion =>
@@ -79,12 +77,24 @@ function AllSuggestionsPage() {
       );
     }
 
-    return tempSuggestions;
-  }, [allSuggestions, searchTerm, minCost, locationTerm, selectedCityId]);
+    const sorted = [...tempSuggestions].sort((a, b) => {
+      switch (sortOrder) {
+        case 'votes-desc':
+          return (b.votes?.length || 0) - (a.votes?.length || 0);
+        case 'votes-asc':
+          return (a.votes?.length || 0) - (b.votes?.length || 0);
+        case 'newest':
+        default:
+          return new Date(b.createdAt) - new Date(a.createdAt);
+      }
+    });
+
+    return sorted;
+  }, [allSuggestions, searchTerm, minCost, locationTerm, selectedCityId, sortOrder]);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, minCost, locationTerm, selectedCityId]);
+  }, [searchTerm, minCost, locationTerm, selectedCityId, sortOrder]);
 
   const handleVoteToggledInCard = useCallback((suggestionId, newVoteCount, newHasVotedState) => {
     setAllSuggestions(prevSuggestions => {
@@ -98,10 +108,10 @@ function AllSuggestionsPage() {
     });
   }, []);
 
-  const totalPages = Math.ceil(filteredSuggestions.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(processedSuggestions.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
-  const currentSuggestions = filteredSuggestions.slice(startIndex, endIndex);
+  const currentSuggestions = processedSuggestions.slice(startIndex, endIndex);
 
   const handlePageChange = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
@@ -118,12 +128,20 @@ function AllSuggestionsPage() {
     }
 
     return (
-      <nav className="pagination-nav">
-        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="pagination-button prev-next">« Previous</button>
+      <nav className="pagination-nav" aria-label="Navigacija stranicama">
+        <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1} className="pagination-button prev-next">« Prethodni</button>
         {pageNumbers.map(number => (
-          <button key={number} onClick={() => handlePageChange(number)} disabled={currentPage === number} className={`pagination-button page-number ${currentPage === number ? 'active' : ''}`}>{number}</button>
+          <button 
+            key={number} 
+            onClick={() => handlePageChange(number)} 
+            disabled={currentPage === number} 
+            className={`pagination-button page-number ${currentPage === number ? 'active' : ''}`}
+            aria-current={currentPage === number ? 'page' : undefined}
+          >
+            {number}
+          </button>
         ))}
-        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className="pagination-button prev-next">Next »</button>
+        <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages} className="pagination-button prev-next">Sljedeći »</button>
       </nav>
     );
   };
@@ -132,12 +150,13 @@ function AllSuggestionsPage() {
   const handleMinCostChange = (event) => setMinCost(event.target.value);
   const handleLocationChange = (event) => setLocationTerm(event.target.value);
   const handleCityChange = (event) => setSelectedCityId(event.target.value);
+  const handleSortChange = (event) => setSortOrder(event.target.value);
 
   return (
-    <>
+    <main>
       <h1 className="all-suggestions-title">Svi prijedlozi</h1>
 
-      <div className="filter-controls-container">
+      <form className="filter-controls-container">
         <div className="filter-group">
           <label htmlFor="search-term" className="filter-label">Pretraga (Naziv/Opis):</label>
           <input
@@ -195,10 +214,24 @@ function AllSuggestionsPage() {
             ))}
           </select>
         </div>
-      </div>
+        
+        <div className="filter-group">
+          <label htmlFor="sort-order" className="filter-label">Sortiraj po:</label>
+          <select
+            id="sort-order"
+            className="filter-select form-control"
+            value={sortOrder}
+            onChange={handleSortChange}
+            disabled={isLoading}
+          >
+            <option value="newest">Najnovije</option>
+            <option value="votes-desc">Najviše glasova</option>
+          </select>
+        </div>
+      </form>
 
       {isLoading && <LoadingSpinner />}
-      {error && <div className="alert alert-danger">Error loading data: {error}</div>}
+      {error && <div className="alert alert-danger" role="alert">Error loading data: {error}</div>}
 
       {!isLoading && !error && (
         <>
@@ -212,7 +245,7 @@ function AllSuggestionsPage() {
           )}
         </>
       )}
-    </>
+    </main>
   );
 }
 

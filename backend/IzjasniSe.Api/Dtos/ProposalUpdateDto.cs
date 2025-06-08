@@ -21,6 +21,5 @@ namespace IzjasniSe.Model.Dtos
 
         public int? CityId { get; set; }
 
-        public int? ModeratorId { get; set; }
     }
 }

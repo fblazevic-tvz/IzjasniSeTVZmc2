@@ -2,127 +2,62 @@
   width: 100%;
 }
 
-.front-page-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 60vh;
-  padding: 40px 20px;
-  box-sizing: border-box;
-  text-align: center;
-  background-color: #eef4ff;
-  color: #343a40;
-}
-
-.front-page-header h1 {
-  font-size: 2.8rem;
-  font-weight: 300;
-  color: #212529;
-  margin-bottom: 20px;
-}
-
-.front-page-content p {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 25px;
-  color: #495057;
-  max-width: 600px;
-}
-
-.image-placeholder {
-  width: 80%;
-  max-width: 400px;
-  height: 200px;
-  background-color: #e9ecef;
-  border: 1px dashed #ced4da;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #6c757d;
-  font-style: italic;
-  margin: 30px auto;
-  border-radius: 4px;
-}
-
-.sign-in-button {
-  padding: 12px 30px;
-  font-size: 1.2rem;
-  margin-top: 20px;
-}
-
-.novi-natjecaji-section {
+.front-page-section {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 60px 40px;
-  gap: 48px;
+  padding: 100px 40px;
+  gap: 64px;
   width: 100%;
-  min-height: 500px;
   background: #FFFFFF;
+}
+
+.front-page-section-alt {
+  background: #F9FAFB;
 }
 
 .section-text-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0px;
-  gap: 16px;
-  width: 100%;
-  max-width: 1280px;
+  gap: 1rem;
   text-align: center;
-}
-
-.section-text-top {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0px;
-  gap: 8px;
-  width: 100%;
-}
-
-.section-caption {
-  height: auto;
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 1.2;
-  text-align: center;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #001D6C;
-  margin: 0;
+  max-width: 800px;
 }
 
 .section-secondary-headline {
-  height: auto;
-  font-family: 'Roboto';
-  font-style: normal;
+  position: relative;
+  font-family: inherit;
   font-weight: 700;
-  font-size: 36px;
-  line-height: 1.1;
-  text-align: center;
-  color: #21272A;
+  font-size: 2.5rem;
+  line-height: 1.2;
+  color: #111827;
   margin: 0;
+  padding-bottom: 1rem;
+}
+
+.section-secondary-headline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 4px;
+  background-color: #0F62FE;
+  border-radius: 2px;
 }
 
 .section-paragraph {
-  width: 100%;
-  max-width: 800px;
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 18px;
-  line-height: 1.4;
-  text-align: center;
-  color: #21272A;
-  margin: 16px 0 0 0;
+  font-family: inherit;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: #4B5563;
+  margin: 0;
 }
 
-.proposal-list-area {
+.content-list-area {
   width: 100%;
   max-width: 1620px;
 }
@@ -134,95 +69,36 @@
   text-align: center;
 }
 
-.front-page-footer {
+.no-content-message {
   width: 100%;
-  margin-top: 50px;
-  padding-top: 20px;
-  border-top: 1px solid #dee2e6;
-  color: #6c757d;
-  font-size: 0.9rem;
-}
-
-.novosti-section {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 80px 40px;
-  gap: 50px;
-  width: 100%;
-  min-height: 500px;
-  background: #f8f9fa;
-}
-
-.novi-natjecaji-section .section-text-container,
-.novosti-section .section-text-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0px;
-  gap: 16px;
-  width: 100%;
-  max-width: 1280px;
+  max-width: 800px;
+  margin: 0 auto;
   text-align: center;
+  padding: 4rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #6B7280;
+  background-color: #F9FAFB;
+  border: 1px dashed #D1D5DB;
+  border-radius: 12px;
 }
 
-.novi-natjecaji-section .section-text-top,
-.novosti-section .section-text-top {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0px;
-  gap: 8px;
-  width: 100%;
-}
-
-.novi-natjecaji-section .section-caption,
-.novosti-section .section-caption {
-  height: auto;
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 1.2;
-  text-align: center;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #001D6C;
-  margin: 0;
-}
-
-.novi-natjecaji-section .section-secondary-headline,
-.novosti-section .section-secondary-headline {
-  height: auto;
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 36px;
-  line-height: 1.1;
-  text-align: center;
-  color: #21272A;
-  margin: 0;
-}
-
-.proposal-list-area,
-.notice-list-area {
-  width: 100%;
-  max-width: 1620px;
-}
-
-.no-proposals-message,
-.no-notices-message {
-  width: 100%;
-  text-align: center;
-  padding: 40px;
-  font-size: 1.1rem;
-  color: #6c757d;
+.front-page-section-alt .no-content-message {
+  background-color: #FFFFFF;
 }
 
 .section-cta-button {
-  padding: 12px 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.875rem 2rem;
   font-size: 1rem;
-  border-radius: 16px;
-  margin-top: 24px;
+  font-weight: 600;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.section-cta-button:hover {
+  text-decoration: none;
 }

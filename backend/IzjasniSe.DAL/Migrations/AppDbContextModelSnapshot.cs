@@ -22,48 +22,6 @@ namespace IzjasniSe.DAL.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("IzjasniSe.Model.Entities.Attachment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ContentType")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.Property<string>("FilePathOrUrl")
-                        .IsRequired()
-                        .HasMaxLength(2048)
-                        .HasColumnType("nvarchar(2048)");
-
-                    b.Property<long>("FileSize")
-                        .HasColumnType("bigint");
-
-                    b.Property<int>("SuggestionId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SuggestionId");
-
-                    b.ToTable("Attachments");
-                });
-
             modelBuilder.Entity("IzjasniSe.Model.Entities.City", b =>
                 {
                     b.Property<int>("Id")
@@ -191,6 +149,10 @@ namespace IzjasniSe.DAL.Migrations
                     b.Property<int?>("ModeratorId")
                         .HasColumnType("int");
 
+                    b.Property<string>("ProfileImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<int>("ProposalId")
                         .HasColumnType("int");
 
@@ -209,6 +171,52 @@ namespace IzjasniSe.DAL.Migrations
                     b.HasIndex("ProposalId");
 
                     b.ToTable("Notices");
+                });
+
+            modelBuilder.Entity("IzjasniSe.Model.Entities.NoticeAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("FilePathOrUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("NoticeId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NoticeId");
+
+                    b.ToTable("NoticeAttachments");
                 });
 
             modelBuilder.Entity("IzjasniSe.Model.Entities.Proposal", b =>
@@ -240,6 +248,10 @@ namespace IzjasniSe.DAL.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("ProfileImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -259,6 +271,52 @@ namespace IzjasniSe.DAL.Migrations
                     b.HasIndex("ModeratorId");
 
                     b.ToTable("Proposals");
+                });
+
+            modelBuilder.Entity("IzjasniSe.Model.Entities.ProposalAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("FilePathOrUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("ProposalId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProposalId");
+
+                    b.ToTable("ProposalAttachments");
                 });
 
             modelBuilder.Entity("IzjasniSe.Model.Entities.Suggestion", b =>
@@ -290,6 +348,10 @@ namespace IzjasniSe.DAL.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
+                    b.Property<string>("ProfileImageUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<int>("ProposalId")
                         .HasColumnType("int");
 
@@ -310,6 +372,52 @@ namespace IzjasniSe.DAL.Migrations
                     b.ToTable("Suggestions");
                 });
 
+            modelBuilder.Entity("IzjasniSe.Model.Entities.SuggestionAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("FilePathOrUrl")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("nvarchar(2048)");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<int>("SuggestionId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SuggestionId");
+
+                    b.ToTable("SuggestionAttachments");
+                });
+
             modelBuilder.Entity("IzjasniSe.Model.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -320,6 +428,10 @@ namespace IzjasniSe.DAL.Migrations
 
                     b.Property<int>("AccountStatus")
                         .HasColumnType("int");
+
+                    b.Property<string>("AvatarUrl")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<int?>("CityId")
                         .HasColumnType("int");
@@ -384,17 +496,6 @@ namespace IzjasniSe.DAL.Migrations
                     b.ToTable("Votes");
                 });
 
-            modelBuilder.Entity("IzjasniSe.Model.Entities.Attachment", b =>
-                {
-                    b.HasOne("IzjasniSe.Model.Entities.Suggestion", "Suggestion")
-                        .WithMany("Attachments")
-                        .HasForeignKey("SuggestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Suggestion");
-                });
-
             modelBuilder.Entity("IzjasniSe.Model.Entities.Comment", b =>
                 {
                     b.HasOne("IzjasniSe.Model.Entities.User", "Author")
@@ -449,6 +550,17 @@ namespace IzjasniSe.DAL.Migrations
                     b.Navigation("Proposal");
                 });
 
+            modelBuilder.Entity("IzjasniSe.Model.Entities.NoticeAttachment", b =>
+                {
+                    b.HasOne("IzjasniSe.Model.Entities.Notice", "Notice")
+                        .WithMany("Attachments")
+                        .HasForeignKey("NoticeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Notice");
+                });
+
             modelBuilder.Entity("IzjasniSe.Model.Entities.Proposal", b =>
                 {
                     b.HasOne("IzjasniSe.Model.Entities.City", "City")
@@ -465,6 +577,17 @@ namespace IzjasniSe.DAL.Migrations
                     b.Navigation("City");
 
                     b.Navigation("Moderator");
+                });
+
+            modelBuilder.Entity("IzjasniSe.Model.Entities.ProposalAttachment", b =>
+                {
+                    b.HasOne("IzjasniSe.Model.Entities.Proposal", "Proposal")
+                        .WithMany("Attachments")
+                        .HasForeignKey("ProposalId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Proposal");
                 });
 
             modelBuilder.Entity("IzjasniSe.Model.Entities.Suggestion", b =>
@@ -491,6 +614,17 @@ namespace IzjasniSe.DAL.Migrations
                     b.Navigation("Location");
 
                     b.Navigation("Proposal");
+                });
+
+            modelBuilder.Entity("IzjasniSe.Model.Entities.SuggestionAttachment", b =>
+                {
+                    b.HasOne("IzjasniSe.Model.Entities.Suggestion", "Suggestion")
+                        .WithMany("Attachments")
+                        .HasForeignKey("SuggestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Suggestion");
                 });
 
             modelBuilder.Entity("IzjasniSe.Model.Entities.User", b =>
@@ -541,8 +675,15 @@ namespace IzjasniSe.DAL.Migrations
                     b.Navigation("Suggestions");
                 });
 
+            modelBuilder.Entity("IzjasniSe.Model.Entities.Notice", b =>
+                {
+                    b.Navigation("Attachments");
+                });
+
             modelBuilder.Entity("IzjasniSe.Model.Entities.Proposal", b =>
                 {
+                    b.Navigation("Attachments");
+
                     b.Navigation("Notices");
 
                     b.Navigation("Suggestions");

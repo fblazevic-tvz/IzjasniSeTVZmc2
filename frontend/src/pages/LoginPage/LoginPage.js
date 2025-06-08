@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { loginUser } from '../../services/authService';
 import './LoginPage.css';
@@ -10,42 +10,39 @@ function LoginPage() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const from = location.state?.from || '/dashboard';
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
     setLoading(true);
-    console.log("[LoginPage] Submit handler started.");
 
     try {
-      console.log("[LoginPage] Calling loginUser service...");
       const loginData = await loginUser({ username, password });
-      console.log("[LoginPage] loginUser service returned:", loginData);
-
-      console.log("[LoginPage] loginData structure seems valid. Calling context login function...");
-      login(loginData);
-      console.log("[LoginPage] Context login function call completed.");
+      login(loginData, from);
     } catch (err) {
-      console.error("[LoginPage] Error caught in handleSubmit:", err);
-      setError(err.message || 'Login failed. Please check credentials or console.');
+      setError(err.message || 'Prijava nije uspjela. Molimo provjerite podatke za prijavu.');
       setLoading(false);
     }
   };
 
   return (
-    <div className="login-page-container">
-      <div className="login-form-box">
-        <h2>Sign In</h2>
-        <form onSubmit={handleSubmit} noValidate>
-          {error && <div className="alert alert-danger">{error}</div>}
+    <main className="login-page-container">
+      <section className="login-form-box" aria-labelledby="login-heading">
+        <h2 id="login-heading">Prijavi se</h2>
+        <form onSubmit={handleSubmit} noValidate aria-busy={loading}>
+          {error && <div className="alert alert-danger" role="alert">{error}</div>}
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="username">Korisničko ime</label>
             <input
               type="text"
               id="username"
               className="form-control"
               required
-              autoComplete="username"
+              autoComplete="off"
               autoFocus
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -53,7 +50,7 @@ function LoginPage() {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Lozinka</label>
             <input
               type="password"
               id="password"
@@ -70,14 +67,31 @@ function LoginPage() {
             className="button-primary login-button"
             disabled={loading}
           >
-            {loading ? 'Signing In...' : 'Sign In'}
+            {loading ? 'Prijava...' : 'Prijava'}
           </button>
-          <div className="signup-link">
-            Don't have an account? <Link to="/signup">Sign Up</Link>
-          </div>
         </form>
-      </div>
-    </div>
+        <footer className="form-footer">
+          <div className="signup-link">
+            Nemate račun? <Link to="/signup">Registrirajte se</Link>
+          </div>
+          <div className="navigation-options">
+            <Link to="/" className="home-link">← Natrag na početnu</Link>
+            {location.state?.from && location.state.from !== '/login' && (
+              <>
+                <span className="separator">ili</span>
+                <button
+                  type="button"
+                  onClick={() => navigate(location.state.from)}
+                  className="text-button"
+                >
+                  Vrati se gdje si bio
+                </button>
+              </>
+            )}
+          </div>
+        </footer>
+      </section>
+    </main>
   );
 }
 

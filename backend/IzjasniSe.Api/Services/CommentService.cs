@@ -12,35 +12,17 @@ namespace IzjasniSe.Api.Services
     public class CommentService : ICommentService
     {
         private readonly AppDbContext _db;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ILogger<CommentService> _logger;
+        private readonly ILoggedInService _loggedInService;
 
-        public CommentService(AppDbContext db, IHttpContextAccessor httpContextAccessor, ILogger<CommentService> logger)
+        public CommentService(AppDbContext db, ILoggedInService loggedInService, ILogger<CommentService> logger)
         {
             _db = db;
-            _httpContextAccessor = httpContextAccessor;
             _logger = logger;
+            _loggedInService = loggedInService;
         }
 
-        private (int? UserId, bool IsAdminOrModerator) GetCurrentUser()
-        {
-            var user = _httpContextAccessor.HttpContext?.User;
-            if (user?.Identity?.IsAuthenticated != true)
-            {
-                return (null, false);
-            }
-
-            var userIdClaim = user.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (!int.TryParse(userIdClaim, out var userId))
-            {
-                _logger.LogWarning("Could not parse User ID claim: {ClaimValue}", userIdClaim);
-                return (null, false);
-            }
-
-            bool isAdminOrModerator = user.IsInRole("Admin") || user.IsInRole("Moderator");
-
-            return (userId, isAdminOrModerator);
-        }
+        
 
         public async Task<IEnumerable<Comment>> GetBySuggestionIdAsync(int suggestionId)
         {
@@ -61,7 +43,7 @@ namespace IzjasniSe.Api.Services
 
         public async Task<Comment?> CreateAsync(CommentCreateDto commentDto)
         {
-            var (currentUserId, _) = GetCurrentUser();
+            var currentUserId = _loggedInService.GetCurrentUserId();
 
             if (currentUserId == null)
             {
@@ -106,7 +88,8 @@ namespace IzjasniSe.Api.Services
 
         public async Task<AuthorizationResult> UpdateAsync(int id, CommentUpdateDto commentDto)
         {
-            var (currentUserId, isAdminOrModerator) = GetCurrentUser();
+            var currentUserId = _loggedInService.GetCurrentUserId();
+            var isAdminOrModerator = _loggedInService.IsCurrentUserAdminOrModerator();
 
             if (currentUserId == null)
             {
@@ -138,7 +121,8 @@ namespace IzjasniSe.Api.Services
 
         public async Task<AuthorizationResult> DeleteAsync(int id)
         {
-            var (currentUserId, isAdminOrModerator) = GetCurrentUser();
+            var currentUserId = _loggedInService.GetCurrentUserId();
+            var isAdminOrModerator = _loggedInService.IsCurrentUserAdminOrModerator();
 
             if (currentUserId == null)
             {

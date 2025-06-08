@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { fetchProposals } from '../../services/proposalService';
 import { fetchNotices } from '../../services/noticeService';
 import ProposalList from '../../components/ProposalList/ProposalList';
 import NoticeList from '../../components/NoticeList/NoticeList';
-import './FrontPage.css';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import CallToActionSection from '../../components/CallToActionSection/CallToActionSection';
-
-console.log('Type of LoadingSpinner:', typeof LoadingSpinner, LoadingSpinner);
-console.log('Type of ProposalList:', typeof ProposalList, ProposalList);
+import './FrontPage.css';
 
 function FrontPage() {
   const [proposals, setProposals] = useState([]);
@@ -20,8 +17,6 @@ function FrontPage() {
   const [isLoadingNotices, setIsLoadingNotices] = useState(false);
   const [errorNotices, setErrorNotices] = useState(null);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     const loadProposals = async () => {
       setIsLoadingProposals(true);
@@ -31,7 +26,6 @@ function FrontPage() {
         setProposals(data);
       } catch (err) {
         setErrorProposals(err.message || 'Failed to load proposals.');
-        setProposals([]);
       } finally {
         setIsLoadingProposals(false);
       }
@@ -51,7 +45,6 @@ function FrontPage() {
         setLatestNotices(sortedNotices.slice(0, 3));
       } catch (err) {
         setErrorNotices(err.message || 'Failed to load notices.');
-        setLatestNotices([]);
       } finally {
         setIsLoadingNotices(false);
       }
@@ -61,52 +54,56 @@ function FrontPage() {
 
   const limitedProposals = proposals.slice(0, 3);
 
-  const goToAllNotices = () => {
-    navigate('/notices');
-  };
-
   return (
-    <div className="front-page-layout">
+    <main className="front-page-layout">
       <CallToActionSection />
 
-      <section className="novi-natjecaji-section">
-      <h2 className="section-secondary-headline">Natječaji</h2>
-        <div className="proposal-list-area">
+      <section className="front-page-section front-page-section-alt" aria-labelledby="proposals-heading">
+        <div className="section-text-container">
+          <h2 id="proposals-heading" className="section-secondary-headline">
+            Otvoreni natječaji
+          </h2>
+          <p className="section-paragraph">
+            Pregledajte najnovije natječaje i uključite se u proces predlaganjem ideja za poboljšanje našeg grada.
+          </p>
+        </div>
+        <div className="content-list-area">
           {isLoadingProposals && <LoadingSpinner />}
-          {errorProposals && <div className="alert alert-danger">Error: {errorProposals}</div>}
+          {errorProposals && <div className="alert alert-danger" role="alert">Error: {errorProposals}</div>}
           {!isLoadingProposals && !errorProposals && (
             limitedProposals.length > 0
               ? <ProposalList proposals={limitedProposals} />
-              : <p className="no-proposals-message">Trenutno nema aktivnih natječaja.</p>
+              : <p className="no-content-message">Trenutno nema aktivnih natječaja.</p>
           )}
         </div>
-        <button onClick={() => navigate('/proposals')} className="section-cta-button button-primary">
+        <Link to="/proposals" className="section-cta-button button-primary">
           Svi natječaji
-        </button>
+        </Link>
       </section>
 
-      <section className="novosti-section">
+      <section className="front-page-section" aria-labelledby="notices-heading">
         <div className="section-text-container">
-          <div className="section-text-top">
-            <h2 className="section-secondary-headline">Novosti</h2>
-          </div>
+          <h2 id="notices-heading" className="section-secondary-headline">
+            Najnovije obavijesti
+          </h2>
+          <p className="section-paragraph">
+            Budite u toku s važnim informacijama i novostima vezanim uz gradske projekte i inicijative.
+          </p>
         </div>
-
-        <div className="notice-list-area">
+        <div className="content-list-area">
           {isLoadingNotices && <LoadingSpinner />}
-          {errorNotices && <div className="alert alert-danger">Error: {errorNotices}</div>}
+          {errorNotices && <div className="alert alert-danger" role="alert">Error: {errorNotices}</div>}
           {!isLoadingNotices && !errorNotices && (
             latestNotices.length > 0
               ? <NoticeList notices={latestNotices} />
-              : <p className="no-notices-message">Trenutno nema novih obavijesti.</p>
+              : <p className="no-content-message">Trenutno nema novih obavijesti.</p>
           )}
         </div>
-
-        <button onClick={goToAllNotices} className="section-cta-button button-primary">
+        <Link to="/notices" className="section-cta-button button-primary">
           Sve obavijesti
-        </button>
+        </Link>
       </section>
-    </div>
+    </main>
   );
 }
 

@@ -2,10 +2,7 @@
 {
     public enum ProposalStatus
     {
-        Draft,
         Active,
-        Closed,
-        Completed,
-        Cancelled
+        Completed
     }
 }

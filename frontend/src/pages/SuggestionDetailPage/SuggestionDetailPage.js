@@ -24,18 +24,13 @@ function SuggestionDetailPage() {
             return;
         }
         const loadSuggestion = async () => {
-            console.log(`Fetching suggestion with ID: ${suggestionId}`);
             setIsLoading(true);
             setError(null);
-            setSuggestion(null);
             try {
                 const data = await fetchSuggestionById(suggestionId);
-                console.log("Fetched suggestion data:", data);
                 setSuggestion(data);
             } catch (err) {
-                console.error(`Error fetching suggestion ${suggestionId}:`, err);
                 setError(err.message || `Dohvaćanje prijedloga ${suggestionId} nije uspjelo.`);
-                setSuggestion(null);
             }
             finally {
                 setIsLoading(false);
@@ -44,89 +39,58 @@ function SuggestionDetailPage() {
         loadSuggestion();
     }, [suggestionId]);
 
-    const renderHeader = () => {
-        if (isLoading) {
-            return (
-                <div className="suggestion-detail-header">
-                    <h1>Učitavanje prijedloga...</h1>
-                </div>
-            );
-        }
-        if (error || !suggestion) {
-            return (
-                <div className="suggestion-detail-header">
-                    <h1>Greška</h1>
-                    <p className="suggestion-header-meta">Prijedlog nije moguće učitati.</p>
-                </div>
-            );
-        }
-        return (
-            <div className="suggestion-detail-header">
-                <h1>{suggestion.name || "Prijedlog bez naziva"}</h1>
-                <p className="suggestion-header-meta">
-                    Status: {suggestion.status} | Podneseno: {formatDateCroatian(suggestion.createdAt)}
-                </p>
-            </div>
-        );
-    };
-
-    const renderTabs = () => {
-        if (isLoading || error || !suggestion) return null;
-        return (
-            <div className="detail-page-tabs suggestion-tabs">
-                <button onClick={() => setActiveTab('details')} className={`tab-button ${activeTab === 'details' ? 'active' : ''}`}>Detalji</button>
-                <button onClick={() => setActiveTab('attachments')} className={`tab-button ${activeTab === 'attachments' ? 'active' : ''}`}>Dodatci</button>
-                <button onClick={() => setActiveTab('comments')} className={`tab-button ${activeTab === 'comments' ? 'active' : ''}`}>Komentari ({suggestion?.comments?.length || 0})</button>
-            </div>
-        );
-    };
-
-    const renderTabContent = () => {
-        if (isLoading || error || !suggestion) return null;
-
-        switch (activeTab) {
-            case 'details':
-                return <SuggestionDetailInfo suggestion={suggestion} />;
-            case 'attachments':
-                return <SuggestionAttachments suggestionId={suggestion.id} attachments={suggestion.attachments} />;
-            case 'comments':
-                return <SuggestionComments
-                    suggestionId={suggestion.id}
-                    initialComments={suggestion.comments || []}
-                />;
-            default:
-                return <SuggestionDetailInfo suggestion={suggestion} />;
-        }
-    };
-
-    const goBack = () => navigate(-1);
+    const suggestionName = isLoading ? "Učitavanje..." : (suggestion?.name || "Prijedlog bez naziva");
 
     return (
-        <>
+        <main className="suggestion-detail-page">
             <div className="back-link-container">
-                <button onClick={goBack} className="back-link-button">← Natrag</button>
+                <button onClick={() => navigate(-1)} className="back-link-button">← Natrag</button>
             </div>
 
-            {isLoading && !suggestion && <LoadingSpinner />}
-
-            {error && !isLoading && !suggestion && (
-                <div className="alert alert-danger detail-error">
+            {error && !isLoading && (
+                <div className="alert alert-danger detail-error" role="alert">
                     Greška: {error} <br />
                     <Link to="/suggestions">Vrati se na popis prijedloga</Link>
                 </div>
             )}
 
-            {!isLoading && renderHeader()}
-
-            {!isLoading && !error && suggestion && (
-                <div className="detail-page-content-area suggestion-content-area">
-                    {renderTabs()}
-                    <div className="tab-content">
-                        {renderTabContent()}
+            <header className="detail-page-header">
+                <div className="header-content">
+                    <h1 className="header-headline">{suggestionName}</h1>
+                    {!isLoading && suggestion && (
+                        <p className="header-meta">
+                            Podneseno: {formatDateCroatian(suggestion.createdAt)}
+                        </p>
+                    )}
+                </div>
+                <div className="header-image-area">
+                    <div className="suggestion-card-image-container">
+                        <img
+                            src="/suggestion.jpg"
+                            alt={`Vizualni prikaz za prijedlog: ${suggestionName}`}
+                            className="suggestion-card-image"
+                            loading="lazy"
+                        />
                     </div>
                 </div>
+            </header>
+
+            {isLoading && !error && <LoadingSpinner />}
+
+            {!isLoading && !error && suggestion && (
+                <div className="suggestion-content-area">
+                    <div className="suggestion-tabs" role="tablist" aria-label="Informacije o prijedlogu">
+                        <button id="tab-details" className={`tab-button ${activeTab === 'details' ? 'active' : ''}`} role="tab" aria-selected={activeTab === 'details'} aria-controls="panel-details" onClick={() => setActiveTab('details')}>Detalji</button>
+                        <button id="tab-attachments" className={`tab-button ${activeTab === 'attachments' ? 'active' : ''}`} role="tab" aria-selected={activeTab === 'attachments'} aria-controls="panel-attachments" onClick={() => setActiveTab('attachments')}>Dokumenti</button>
+                        <button id="tab-comments" className={`tab-button ${activeTab === 'comments' ? 'active' : ''}`} role="tab" aria-selected={activeTab === 'comments'} aria-controls="panel-comments" onClick={() => setActiveTab('comments')}>Komentari ({suggestion?.comments?.length || 0})</button>
+                    </div>
+                    
+                    {activeTab === 'details' && <section id="panel-details" role="tabpanel" tabIndex="0" aria-labelledby="tab-details"><SuggestionDetailInfo suggestion={suggestion} /></section>}
+                    {activeTab === 'attachments' && <section id="panel-attachments" role="tabpanel" tabIndex="0" aria-labelledby="tab-attachments"><SuggestionAttachments suggestionId={suggestion.id} /></section>}
+                    {activeTab === 'comments' && <section id="panel-comments" role="tabpanel" tabIndex="0" aria-labelledby="tab-comments"><SuggestionComments suggestionId={suggestion.id} initialComments={suggestion.comments || []} /></section>}
+                </div>
             )}
-        </>
+        </main>
     );
 }
 

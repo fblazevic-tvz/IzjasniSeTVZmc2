@@ -63,7 +63,6 @@ builder.Services.AddControllers()
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
-builder.Services.AddScoped<IAttachmentService, AttachmentService>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
@@ -73,6 +72,11 @@ builder.Services.AddScoped<ISuggestionService, SuggestionService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IVoteService, VoteService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ILoggedInService, LoggedInService>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+builder.Services.AddScoped<ISuggestionAttachmentService, SuggestionAttachmentService>();
+builder.Services.AddScoped<IProposalAttachmentService, ProposalAttachmentService>();
+builder.Services.AddScoped<INoticeAttachmentService, NoticeAttachmentService>();
 
 var app = builder.Build();
 
@@ -82,10 +86,10 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
-
+app.Environment.WebRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
 app.UseHttpsRedirection();
-
 app.UseCors(MyAllowSpecificOrigins);
+app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();

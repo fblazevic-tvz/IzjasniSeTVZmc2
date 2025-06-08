@@ -1,16 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import './NoticeAttachments.css'; 
 
 function NoticeAttachments({ noticeId }) {
-
-    const attachments = [
+      const attachments = [
         { id: 1, name: `Dodatni_detalji_obavijest_${noticeId}.pdf`, url: '#' },
         { id: 2, name: `Povezani_dokument_${noticeId}.docx`, url: '#' },
     ];
 
     return (
-        <div className="notice-attachments">
+        <section className="notice-attachments">
             <h2>Priloženi dokumenti</h2>
 
             <div className="attachments-list-container">
@@ -18,18 +18,20 @@ function NoticeAttachments({ noticeId }) {
                     <ul className="attachments-list">
                         {attachments.map(att => (
                             <li key={att.id} className="attachment-item">
-                                <span className="attachment-icon">📎</span> 
-                                <a href={att.url} target="_blank" rel="noopener noreferrer" className="attachment-link">
-                                    {att.name}
-                                </a>
+                                <ArticleOutlinedIcon className="attachment-icon" aria-hidden="true" />
+                                <div className="attachment-details">
+                                    <a href={att.url} target="_blank" rel="noopener noreferrer" className="attachment-link">
+                                        {att.name}
+                                    </a>
+                                </div>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <p>Nema priloženih dokumenata za ovu obavijest.</p>
+                    <p className="no-content-message">Nema priloženih dokumenata za ovu obavijest.</p>
                 )}
             </div>
-        </div>
+        </section>
     );
 }
 
