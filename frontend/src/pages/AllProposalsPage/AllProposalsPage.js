@@ -99,13 +99,13 @@ function AllProposalsPage() {
     }
 
     return (
-      <nav className="pagination-nav">
+      <nav className="pagination-nav" aria-label="Navigacija stranicama">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
           className="pagination-button prev-next"
         >
-          « Previous
+          « Prethodni
         </button>
         {pageNumbers.map(number => (
           <button
@@ -113,6 +113,7 @@ function AllProposalsPage() {
             onClick={() => handlePageChange(number)}
             disabled={currentPage === number}
             className={`pagination-button page-number ${currentPage === number ? 'active' : ''}`}
+            aria-current={currentPage === number ? 'page' : undefined}
           >
             {number}
           </button>
@@ -122,17 +123,17 @@ function AllProposalsPage() {
           disabled={currentPage === totalPages}
           className="pagination-button prev-next"
         >
-          Next »
+          Sljedeći »
         </button>
       </nav>
     );
   };
 
   return (
-    <>
-      <h1 className="all-proposals-title">Svi Natječaji</h1>
+    <main>
+      <h1 className="all-proposals-title">Svi natječaji</h1>
 
-      <div className="filter-controls-container">
+      <form className="filter-controls-container">
         <div className="filter-group">
           <label htmlFor="search-term" className="filter-label">Pretraga (Naziv/Opis):</label>
           <input
@@ -165,7 +166,7 @@ function AllProposalsPage() {
         </div>
 
         <div className="filter-group">
-          <label htmlFor="max-budget" className="filter-label">Maksimalni Budžet (EUR):</label>
+          <label htmlFor="max-budget" className="filter-label">Maksimalni budžet (EUR):</label>
           <input
             type="number"
             id="max-budget"
@@ -177,10 +178,10 @@ function AllProposalsPage() {
             disabled={isLoading}
           />
         </div>
-      </div>
+      </form>
 
       {isLoading && <LoadingSpinner />}
-      {error && <div className="alert alert-danger">Error loading data: {error}</div>}
+      {error && <div className="alert alert-danger" role="alert">Error loading data: {error}</div>}
 
       {!isLoading && !error && (
         <>
@@ -194,7 +195,7 @@ function AllProposalsPage() {
           )}
         </>
       )}
-    </>
+    </main>
   );
 }
 

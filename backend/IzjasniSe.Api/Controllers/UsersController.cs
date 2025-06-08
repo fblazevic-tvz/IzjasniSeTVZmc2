@@ -3,6 +3,9 @@ using IzjasniSe.Model.Entities;
 using IzjasniSe.Api.Dtos;
 using Microsoft.AspNetCore.Identity;
 using IzjasniSe.Api.Services.Interfaces;
+using IzjasniSe.Model.Enums;
+using Microsoft.AspNetCore.Authorization;
+using IzjasniSe.Api.Services;
 
 namespace IzjasniSe.Api.Controllers
 {
@@ -13,23 +16,29 @@ namespace IzjasniSe.Api.Controllers
         private readonly IUserService _users;
         private readonly ILogger<UsersController> _logger;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly ILoggedInService _loggedInService;
+        private readonly IFileUploadService _fileUploadService;
 
-        public UsersController(IUserService users, ILogger<UsersController> logger)
+        public UsersController(IUserService users, ILogger<UsersController> logger, ILoggedInService loggedInService, IFileUploadService fileUploadService)
         {
             _users = users;
             _logger = logger;
             _passwordHasher = new PasswordHasher<User>();
+            _loggedInService = loggedInService;
+            _fileUploadService = fileUploadService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetAll()
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<UserReadDto>>> GetAll()
         {
             var list = await _users.GetAllAsync();
             return Ok(list);
         }
 
         [HttpGet("{id:int}", Name = "GetUserById")]
-        public async Task<ActionResult<User>> GetById(int id)
+        [Authorize]
+        public async Task<ActionResult<UserReadDto>> GetById(int id)
         {
             var user = await _users.GetByIdAsync(id);
             if (user == null)
@@ -92,6 +101,46 @@ namespace IzjasniSe.Api.Controllers
             if (!ok) return NotFound();
 
             return NoContent();
+        }
+
+        [HttpPatch("status/{id:int}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ChangeUserStatus(int id, [FromBody] ChangeUserStatusDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var success = await _users.ChangeStatusAsync(id, dto.Status);
+            if (!success)
+                return NotFound();
+
+            return NoContent();
+        }
+
+        [HttpPost("{id:int}/avatar")]
+        [Authorize]
+        public async Task<IActionResult> UpdateAvatar(int id, [FromForm] UserAvatarUpdateDto dto)
+        {
+            var currentUserId = _loggedInService.GetCurrentUserId();
+            if (currentUserId != id)
+            {
+                return Forbid();
+            }
+
+            try
+            {
+                var avatarUrl = await _fileUploadService.UploadAvatarAsync(dto.Avatar, id);
+                var success = await _users.UpdateAvatarAsync(id, avatarUrl);
+
+                if (!success)
+                    return NotFound();
+
+                return Ok(new { avatarUrl });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

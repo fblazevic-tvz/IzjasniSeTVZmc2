@@ -48,3 +48,20 @@ export const formatCurrencyEuroCroatian = (amount) => {
     return 'N/A';
   }
 };
+
+export const formatRoleCroatian = (role) => {
+  const roleMap = {
+    Admin: 'Administrator',
+    Moderator: 'Moderator',
+    Regular: 'Korisnik',
+  };
+  return roleMap[role] || role;
+}
+
+export const formatProposalStatusCroatian = (status) => {
+  const statusMap = {
+    Active: 'U tijeku',
+    Completed: 'Završen'
+  }
+  return statusMap[status] || status;
+}

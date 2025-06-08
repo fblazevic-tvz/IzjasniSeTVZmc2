@@ -1,51 +1,105 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { fetchProposalAttachments } from '../../services/proposalAttachmentService';
+import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
 import './ProposalParticipate.css';
 
 function ProposalParticipate({ proposalId }) {
+    const [attachments, setAttachments] = useState([]);
+    const navigate = useNavigate();
+    const { isAuthenticated } = useAuth();
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const attachments = [
-        { id: 1, name: 'Plan_izgradnje_parka.pdf', url: '#' },
-        { id: 2, name: 'Proracun_stavke.xlsx', url: '#' },
-        { id: 3, name: 'Skica_lokacije.jpg', url: '#' },
-    ];
+    useEffect(() => {
+        const loadAttachments = async () => {
+            if (!proposalId) {
+                setIsLoading(false);
+                return;
+            }
+
+            setIsLoading(true);
+            setError(null);
+            
+            try {
+                const data = await fetchProposalAttachments(proposalId);
+                setAttachments(data);
+            } catch (err) {
+                setError(err.message || 'Failed to load attachments');
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        loadAttachments();
+    }, [proposalId]);
+
+     const handleCreateSuggestion = (e) => {
+        if (!isAuthenticated) {
+            e.preventDefault();
+            navigate('/login', { 
+                state: { from: `/create-suggestion?proposalId=${proposalId}` } 
+            });
+        }
+    };
 
     return (
-        <div className="proposal-participate">
-            <h2>Sudjeluj u Natječaju</h2>
+        <section className="proposal-participate">
+            <div className="participate-header">
+                <h2>Sudjeluj u Natječaju</h2>
+                <p className="participate-description">
+                    Imate ideju koja može unaprijediti naš grad?{<br></br>}
+                    Podijelite je s nama! Podnesite novi prijedlog za ovaj natječaj.
+                </p>
+                <Link
+                    to={`/create-suggestion?proposalId=${proposalId}`} 
+                    className="button-primary participate-button"
+                    onClick={handleCreateSuggestion}
+                    style={!proposalId ? { pointerEvents: 'none', opacity: 0.65 } : {}}
+                >
+                    Podnesi novi prijedlog
+                </Link>
+            </div>
 
-            <Link
-                to={`/create-suggestion?proposalId=${proposalId}`} 
-                className="button-primary participate-button"
-                style={!proposalId ? { pointerEvents: 'none', opacity: 0.65 } : {}}
-            >
-                Kreiraj Prijedlog za ovaj Natječaj
-            </Link>
-
-            <div className="attachments-section">
+            <section className="attachments-section">
                 <h3>Povezani Dokumenti</h3>
-                {attachments.length > 0 ? (
+                {isLoading ? (
+                    <p className="no-content-message" role="status">Učitavanje dokumenata...</p>
+                ) : error ? (
+                    <p className="no-content-message error" role="alert">Greška pri učitavanju dokumenata.</p>
+                ) : attachments.length > 0 ? (
                     <ul className="attachments-list">
                         {attachments.map(att => (
                             <li key={att.id} className="attachment-item">
-                                <span className="attachment-icon">📄</span> 
-                                <a href={att.url} target="_blank" rel="noopener noreferrer" className="attachment-link">
-                                    {att.name}
-                                </a>
+                                <ArticleOutlinedIcon className="attachment-icon" aria-hidden="true" />
+                                <div className="attachment-details">
+                                    <a 
+                                        href={att.downloadUrl} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer" 
+                                        className="attachment-link"
+                                    >
+                                        {att.fileName}
+                                    </a>
+                                    {att.description && (
+                                        <span className="attachment-desc">{att.description}</span>
+                                    )}
+                                </div>
                             </li>
                         ))}
                     </ul>
                 ) : (
-                    <p>Nema priloženih dokumenata.</p>
+                    <p className="no-content-message">Nema priloženih dokumenata za ovaj natječaj.</p>
                 )}
-            </div>
-        </div>
+            </section>
+        </section>
     );
 }
 
 ProposalParticipate.propTypes = {
-    proposalId: PropTypes.number, 
+    proposalId: PropTypes.number.isRequired, 
 };
 
 export default ProposalParticipate;

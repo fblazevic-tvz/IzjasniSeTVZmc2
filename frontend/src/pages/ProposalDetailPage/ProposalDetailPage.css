@@ -1,14 +1,16 @@
-.detail-page-header {
+main.proposal-detail-page {
+  padding-bottom: 40px;
+}
+
+header.detail-page-header {
   box-sizing: border-box;
   display: flex;
-  flex-direction: row;
   align-items: center;
   padding: 40px 60px;
   gap: 40px;
   width: 100%;
   min-height: 250px;
   background: #eef4ff;
-  font-family: 'Roboto', sans-serif;
   flex-wrap: wrap;
   border-bottom: 1px solid #dee2e6;
   margin-bottom: 30px;
@@ -24,13 +26,10 @@
 }
 
 .header-headline {
-  width: 100%;
-  font-family: 'Roboto';
-  font-style: normal;
   font-weight: 700;
   font-size: 2.8rem;
   line-height: 1.15;
-  color: #21272A;
+  color: #21272a;
   margin: 0;
 }
 
@@ -48,17 +47,17 @@
   min-width: 250px;
 }
 
-.header-image-placeholder {
+.proposal-card-image-container {
   width: 100%;
-  height: 250px;
-  background: #DDE1E6;
-  border: 1px dashed #C1C7CD;
+  max-height: 250px;
+  overflow: hidden;
   border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #697077;
-  font-style: italic;
+}
+
+.proposal-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .back-link-container {
@@ -77,49 +76,52 @@
   text-decoration: underline;
 }
 
-.detail-page-content-area {
-  padding: 0px 0 40px;
-}
-
-.detail-page-tabs {
+.proposal-tabs {
   display: flex;
-  flex-direction: row;
   justify-content: center;
-  align-items: flex-start;
   padding: 0;
-  margin-bottom: 0;
-  border-bottom: 3px solid #dee2e6;
+  border-bottom: 2px solid #dee2e6;
+  background-color: #f8f9fa;
+  border-radius: 8px 8px 0 0;
 }
 
 .tab-button {
-  padding: 15px 25px;
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 1.1rem;
-  line-height: 1.2;
+  padding: 16px 28px;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.3;
   text-align: center;
   color: #495057;
   background: none;
   border: none;
-  border-bottom: 3px solid transparent;
+  border-bottom: 2px solid transparent;
   cursor: pointer;
-  margin-bottom: -3px;
-  transition: color 0.2s ease, border-bottom-color 0.2s ease;
+  margin-bottom: -2px;
+  transition: all 0.2s ease;
   white-space: nowrap;
+  position: relative;
 }
 
 .tab-button:hover {
   color: #0d6efd;
+  background-color: rgba(13, 110, 253, 0.04);
+  border-radius: 6px 6px 0 0;
 }
 
 .tab-button.active {
   color: #0d6efd;
   border-bottom-color: #0d6efd;
+  background-color: rgba(13, 110, 253, 0.06);
+  font-weight: 600;
+  border-radius: 6px 6px 0 0;
 }
 
-.tab-content {
+section[role="tabpanel"] {
   padding: 30px 0 0 0;
+}
+
+section[role="tabpanel"]:focus {
+  outline: none;
 }
 
 .alert.detail-error {

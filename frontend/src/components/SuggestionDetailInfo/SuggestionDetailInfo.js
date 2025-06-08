@@ -23,47 +23,43 @@ function SuggestionDetailInfo({ suggestion }) {
     const authorName = author?.userName || "Anonimno";
     const locationName = location?.name || location?.address || "Nepoznata lokacija";
     const locationCityName = location?.city?.name || ""; 
-    const proposalName = proposal?.name || "Nepoznat Natječaj";
+    const proposalName = proposal?.name || "Nepoznat natječaj";
     const voteCount = votes?.length || 0;
 
     return (
         <div className="suggestion-detail-layout"> 
-            <div className="suggestion-content-main">
-                <h3>Opis Prijedloga</h3>
+            <main className="suggestion-content-main">
+                <h3>Opis prijedloga</h3>
                 <p className="suggestion-content-text">{description}</p>
-                 <p className="suggestion-meta">
+                 <footer className="suggestion-meta">
                      Podneseno: {formatDateCroatian(createdAt)} | Autor: {authorName}
-                 </p>
-            </div>
+                 </footer>
+            </main>
 
             <aside className="suggestion-info-sidebar">
-                <h4>Informacije o Prijedlogu</h4>
-                <div className="sidebar-info-item">
-                    <span className="sidebar-info-label">Status:</span>
-                    <span className="sidebar-info-value status">{status}</span>
-                </div>
-                 <div className="sidebar-info-item">
-                    <span className="sidebar-info-label">Procijenjeni Trošak:</span>
-                    <span className="sidebar-info-value budget">{formatCurrencyEuroCroatian(estimatedCost)}</span>
-                </div>
-                 <div className="sidebar-info-item">
-                    <span className="sidebar-info-label">Broj Glasova:</span>
-                    <span className="sidebar-info-value votes">{voteCount}</span>
-                </div>
-                <div className="sidebar-info-item">
-                    <span className="sidebar-info-label">Lokacija:</span>
-                    <span className="sidebar-info-value location">{locationName}{locationCityName ? `, ${locationCityName}` : ''}</span>
-                </div>
+                <h4>Informacije o prijedlogu</h4>
+                 <dl className="sidebar-info-item">
+                    <dt className="sidebar-info-label">Procijenjeni trošak:</dt>
+                    <dd className="sidebar-info-value budget">{formatCurrencyEuroCroatian(estimatedCost)}</dd>
+                </dl>
+                 <dl className="sidebar-info-item">
+                    <dt className="sidebar-info-label">Broj glasova:</dt>
+                    <dd className="sidebar-info-value votes">{voteCount}</dd>
+                </dl>
+                <dl className="sidebar-info-item">
+                    <dt className="sidebar-info-label">Lokacija:</dt>
+                    <dd className="sidebar-info-value location">{locationName}{locationCityName ? `, ${locationCityName}` : ''}</dd>
+                </dl>
 
                 {proposal?.id && (
-                    <div className="related-proposal-info">
-                         <h5>Povezani Natječaj</h5>
+                    <section className="related-proposal-info">
+                         <h5>Povezani natječaj</h5>
                          <p>
                              <Link to={`/proposals/${proposal.id}`} className="sidebar-link-to-proposal">
                                  {proposalName}
                              </Link>
                          </p>
-                    </div>
+                    </section>
                  )}
             </aside>
         </div>

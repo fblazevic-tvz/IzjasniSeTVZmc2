@@ -10,11 +10,15 @@ namespace IzjasniSe.Api.Services
     {
         private readonly AppDbContext _db;
         private readonly IProposalService _proposalsService;
+        private readonly ILoggedInService _loggedInService;
+        private readonly IFileUploadService _fileUploadService;
 
-        public NoticeService(AppDbContext db, IProposalService proposalsService)
+        public NoticeService(AppDbContext db, IProposalService proposalsService, ILoggedInService loggedInService, IFileUploadService fileUploadService)
         {
             _db = db;
             _proposalsService = proposalsService;
+            _loggedInService = loggedInService;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<IEnumerable<Notice>> GetAllAsync()
@@ -66,18 +70,23 @@ namespace IzjasniSe.Api.Services
 
             if (isValid)
             {
-                var entity = new Notice
+                var currentUserId = _loggedInService.GetCurrentUserId();
+                if (currentUserId == noticeCreateDto.ModeratorId)
                 {
-                    Title = noticeCreateDto.Title,
-                    Content = noticeCreateDto.Content,
-                    ProposalId = noticeCreateDto.ProposalId,
-                    ModeratorId = noticeCreateDto.ModeratorId,
-                    CreatedAt = DateTime.UtcNow,
-                };
+                    var entity = new Notice
+                    {
+                        Title = noticeCreateDto.Title,
+                        Content = noticeCreateDto.Content,
+                        ProposalId = noticeCreateDto.ProposalId,
+                        ModeratorId = noticeCreateDto.ModeratorId,
+                        CreatedAt = DateTime.UtcNow,
+                    };
 
-                _db.Notices.Add(entity);
-                await _db.SaveChangesAsync();
-                return entity;
+                    _db.Notices.Add(entity);
+                    await _db.SaveChangesAsync();
+                    return entity;
+
+                }
             }
 
             return null;
@@ -91,50 +100,63 @@ namespace IzjasniSe.Api.Services
             if (existingNotice == null)
                 return false;
 
-
-            if (noticeUpdateDto.ProposalId.HasValue)
+            var currentUserId = _loggedInService.GetCurrentUserId();
+            if (currentUserId == existingNotice.ModeratorId)
             {
-                var foundProposal = await _proposalsService.GetByIdAsync(noticeUpdateDto.ProposalId.Value);
+                if (noticeUpdateDto.Title != null)
+                    existingNotice.Title = noticeUpdateDto.Title;
 
-                if (foundProposal == null)
-                {
-                    return false;
-                }
+                if (noticeUpdateDto.Content != null)
+                    existingNotice.Content = noticeUpdateDto.Content;
 
-                if (noticeUpdateDto.ModeratorId.HasValue)
-                {
-                    if (!noticeUpdateDto.ModeratorId.Equals(foundProposal.ModeratorId))
-                    {
-                        return false;
-                    }
-                }
+                existingNotice.UpdatedAt = DateTime.UtcNow;
+
+                _db.Notices.Update(existingNotice);
+                await _db.SaveChangesAsync();
+                return true;
             }
-
-            if (noticeUpdateDto.Title != null)
-                existingNotice.Title = noticeUpdateDto.Title;
-
-            if (noticeUpdateDto.Content != null)
-                existingNotice.Content = noticeUpdateDto.Content;
-
-            if (noticeUpdateDto.ProposalId.HasValue)
-                existingNotice.ProposalId = noticeUpdateDto.ProposalId.Value;
-
-            if (noticeUpdateDto.ModeratorId.HasValue)
-                existingNotice.ModeratorId = noticeUpdateDto.ModeratorId.Value;
-
-            existingNotice.UpdatedAt = DateTime.UtcNow;
-
-            _db.Notices.Update(existingNotice);
-            await _db.SaveChangesAsync();
-            return true;
+            return false;
+                
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
+
             var existing = await _db.Notices.FindAsync(id);
             if (existing == null) return false;
 
-            _db.Notices.Remove(existing);
+            var currentUserId = _loggedInService.GetCurrentUserId();
+            if(currentUserId == existing.ModeratorId)
+            {
+                _db.Notices.Remove(existing);
+                await _db.SaveChangesAsync();
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<bool> UpdateProfileImageAsync(int id, string profileImageUrl)
+        {
+            var currentUserId = _loggedInService.GetCurrentUserId();
+            if (currentUserId == null)
+                return false;
+
+            var notice = await _db.Notices.FindAsync(id);
+            if (notice == null)
+                return false;
+
+            if (notice.ModeratorId != currentUserId)
+                return false;
+
+            if (!string.IsNullOrEmpty(notice.ProfileImageUrl))
+            {
+                await _fileUploadService.DeleteFileAsync(notice.ProfileImageUrl);
+            }
+
+            notice.ProfileImageUrl = profileImageUrl;
+            notice.UpdatedAt = DateTime.UtcNow;
+
             await _db.SaveChangesAsync();
             return true;
         }

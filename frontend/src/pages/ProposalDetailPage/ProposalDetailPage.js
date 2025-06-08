@@ -6,11 +6,8 @@ import ProposalDetailInfo from '../../components/ProposalDetailInfo/ProposalDeta
 import ProposalParticipate from '../../components/ProposalParticipate/ProposalParticipate';
 import ProposalSuggestions from '../../components/ProposalSuggestions/ProposalSuggestions';
 import ProposalNotices from '../../components/ProposalNotices/ProposalNotices';
-import { formatDateCroatian } from '../../utils/formatters';
-
+import { formatDateCroatian, formatProposalStatusCroatian } from '../../utils/formatters';
 import './ProposalDetailPage.css';
-
-
 
 function ProposalDetailPage() {
     const { proposalId } = useParams();
@@ -19,6 +16,7 @@ function ProposalDetailPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('details');
+    const [refreshNoticesKey, setRefreshNoticesKey] = useState(0);
 
     useEffect(() => {
         if (!proposalId) {
@@ -35,7 +33,6 @@ function ProposalDetailPage() {
                 setProposal(data);
             } catch (err) {
                 setError(err.message || `Failed to load proposal ${proposalId}.`);
-                setProposal(null);
             } finally {
                 setIsLoading(false);
             }
@@ -44,113 +41,65 @@ function ProposalDetailPage() {
         loadProposal();
     }, [proposalId]);
 
-
-    const renderHeader = () => {
-        if (!proposal && !isLoading) return null;
-
-        const proposalName = isLoading ? "Loading..." : (proposal?.name || "Natječaj nije pronađen");
-
-        return (
-            <section className="detail-page-header">
-                <div className="header-content">
-                    <h1 className="header-headline">{proposalName}</h1>
-
-                    {!isLoading && proposal && (
-                         <p className="header-meta">
-                             Objavljeno: {formatDateCroatian(proposal.createdAt)} | Status: {proposal.status}
-                         </p>
-                     )}
-                </div>
-                <div className="header-image-area">
-                    <div className="header-image-placeholder">
-                        <span>[Header Image Placeholder]</span>
-                    </div>
-                </div>
-            </section>
-        );
+    const handleNoticeCreated = (newNotice) => {
+        setRefreshNoticesKey(prev => prev + 1);
+        setActiveTab('notices');
     };
 
-    const renderTabs = () => {
-        if (isLoading || error || !proposal) return null;
-
-        return (
-            <div className="detail-page-tabs">
-                <button
-                    onClick={() => setActiveTab('details')}
-                    className={`tab-button ${activeTab === 'details' ? 'active' : ''}`}
-                >
-                    Natječaj
-                </button>
-                <button
-                    onClick={() => setActiveTab('participate')}
-                    className={`tab-button ${activeTab === 'participate' ? 'active' : ''}`}
-                >
-                    Sudjeluj
-                </button>
-                 <button
-                    onClick={() => setActiveTab('suggestions')}
-                    className={`tab-button ${activeTab === 'suggestions' ? 'active' : ''}`}
-                >
-                    Prijedlozi
-                </button>
-                <button
-                    onClick={() => setActiveTab('notices')}
-                    className={`tab-button ${activeTab === 'notices' ? 'active' : ''}`}
-                >
-                    Obavijesti
-                </button>
-
-            </div>
-        );
-    }
-
-    const renderTabContent = () => {
-        if (isLoading || error || !proposal) return null;
-
-        switch (activeTab) {
-            case 'details':
-                return <ProposalDetailInfo proposal={proposal} />;
-            case 'participate':
-                return <ProposalParticipate proposalId={proposal.id} />;
-            case 'suggestions':
-                return <ProposalSuggestions proposalId={proposal.id} />;
-            case 'notices':
-                return <ProposalNotices proposalId={proposal.id} />;
-            default:
-                return <ProposalDetailInfo proposal={proposal} />;
-        }
-    };
+    const proposalName = isLoading ? "Učitavanje..." : (proposal?.name || "Natječaj nije pronađen");
 
     return (
-        <>
-
-             <div className="back-link-container">
+        <main className="proposal-detail-page">
+            <div className="back-link-container">
                 <Link to="/proposals" className="back-link">← Natrag na sve natječaje</Link>
-             </div>
+            </div>
 
-
-            {isLoading && <LoadingSpinner />}
             {error && !isLoading && (
-                 <div className="alert alert-danger detail-error">
-                     Error: {error}
-                     <br />
-                     <Link to="/proposals">Vrati se na popis</Link>
-                 </div>
-             )}
-
-
-            {renderHeader()}
-
-
-            {!isLoading && !error && proposal && (
-                <div className="detail-page-content-area">
-                    {renderTabs()}
-                    <div className="tab-content">
-                        {renderTabContent()}
-                    </div>
+                <div className="alert alert-danger detail-error" role="alert">
+                    Greška: {error} <br />
+                    <Link to="/proposals">Vrati se na popis</Link>
                 </div>
             )}
-        </>
+
+            <header className="detail-page-header">
+                <div className="header-content">
+                    <h1 className="header-headline">{proposalName}</h1>
+                    {!isLoading && proposal && (
+                        <p className="header-meta">
+                            Objavljeno: {formatDateCroatian(proposal.createdAt)} | Status: {formatProposalStatusCroatian(proposal.status)}
+                        </p>
+                    )}
+                </div>
+                <div className="header-image-area">
+                    <div className="proposal-card-image-container">
+                        <img
+                            src="/proposal.jpg"
+                            alt={`Vizualni prikaz za natječaj: ${proposalName}`}
+                            className="proposal-card-image"
+                            loading="lazy"
+                        />
+                    </div>
+                </div>
+            </header>
+
+            {isLoading && !error && <LoadingSpinner />}
+
+            {!isLoading && !error && proposal && (
+                <div className="proposal-content-area">
+                    <div className="proposal-tabs" role="tablist" aria-label="Informacije o natječaju">
+                        <button id="tab-details" className={`tab-button ${activeTab === 'details' ? 'active' : ''}`} role="tab" aria-selected={activeTab === 'details'} aria-controls="panel-details" onClick={() => setActiveTab('details')}>Natječaj</button>
+                        <button id="tab-participate" className={`tab-button ${activeTab === 'participate' ? 'active' : ''}`} role="tab" aria-selected={activeTab === 'participate'} aria-controls="panel-participate" onClick={() => setActiveTab('participate')}>Sudjeluj</button>
+                        <button id="tab-suggestions" className={`tab-button ${activeTab === 'suggestions' ? 'active' : ''}`} role="tab" aria-selected={activeTab === 'suggestions'} aria-controls="panel-suggestions" onClick={() => setActiveTab('suggestions')}>Prijedlozi</button>
+                        <button id="tab-notices" className={`tab-button ${activeTab === 'notices' ? 'active' : ''}`} role="tab" aria-selected={activeTab === 'notices'} aria-controls="panel-notices" onClick={() => setActiveTab('notices')}>Obavijesti</button>
+                    </div>
+                    
+                    {activeTab === 'details' && <section id="panel-details" role="tabpanel" tabIndex="0" aria-labelledby="tab-details"><ProposalDetailInfo proposal={proposal} onNoticeCreated={handleNoticeCreated} /></section>}
+                    {activeTab === 'participate' && <section id="panel-participate" role="tabpanel" tabIndex="0" aria-labelledby="tab-participate"><ProposalParticipate proposalId={proposal.id} /></section>}
+                    {activeTab === 'suggestions' && <section id="panel-suggestions" role="tabpanel" tabIndex="0" aria-labelledby="tab-suggestions"><ProposalSuggestions proposalId={proposal.id} /></section>}
+                    {activeTab === 'notices' && <section id="panel-notices" role="tabpanel" tabIndex="0" aria-labelledby="tab-notices"><ProposalNotices key={refreshNoticesKey} proposalId={proposal.id} /></section>}
+                </div>
+            )}
+        </main>
     );
 }
 

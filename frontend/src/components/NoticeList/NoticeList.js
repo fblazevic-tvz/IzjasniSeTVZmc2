@@ -1,19 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import NoticeCard from '../NoticeCard/NoticeCard';
-import './NoticeList.css'; // CSS for the list layout
+import './NoticeList.css';
 
-function NoticeList({ notices }) {
+function NoticeList({ notices, onEdit, onDelete }) {
   if (!notices || notices.length === 0) {
-    return null; 
+    return null;
   }
 
   return (
-    <div className="notice-list-container">
+    <ul className="notice-list-container">
       {notices.map((notice) => (
-        <NoticeCard key={notice.id} notice={notice} />
+        <li key={notice.id}>
+          <NoticeCard
+            notice={notice}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        </li>
       ))}
-    </div>
+    </ul>
   );
 }
 
@@ -21,6 +27,8 @@ NoticeList.propTypes = {
   notices: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
   })).isRequired,
+  onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
 };
 
 export default NoticeList;

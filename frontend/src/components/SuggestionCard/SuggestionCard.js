@@ -34,6 +34,18 @@ function SuggestionCard({ suggestion, showActions = false, onEdit, onDelete, onV
     setLocalVoteCount(suggestion?.votes?.length || 0);
   }, [suggestion]);
 
+  const getAvatarUrl = () => {
+    if (author?.avatarUrl) {
+      if (author.avatarUrl.startsWith('/')) {
+        const apiBaseUrl = process.env.REACT_APP_API_BASE_URL || 'https://localhost:7003/api';
+        const baseUrl = apiBaseUrl.replace('/api', '');
+        return `${baseUrl}${author.avatarUrl}`;
+      }
+      return author.avatarUrl;
+    }
+    return null;
+  };
+
   const handleVoteToggle = async (e) => {
     e.stopPropagation();
     if (!isAuthenticated) {
@@ -55,9 +67,7 @@ function SuggestionCard({ suggestion, showActions = false, onEdit, onDelete, onV
         onVoteToggled(id, result.newVoteCount, result.userHasVoted);
       }
       setLocalVoteCount(result.newVoteCount);
-      console.log("Vote toggled successfully:", result);
     } catch (err) {
-      console.error("Vote toggle failed:", err);
       setVoteError(err.message || "Glasanje nije uspjelo.");
       setLocalVoteCount(previousVoteCount);
     } finally {
@@ -93,36 +103,59 @@ function SuggestionCard({ suggestion, showActions = false, onEdit, onDelete, onV
     }
   };
 
+  const fullAvatarUrl = getAvatarUrl();
+
   return (
-    <div className="suggestion-card">
-      <img
-        src="/suggestion.jpg"
-        alt="Vizualni prikaz za prijedlog"
-        className="suggestion-card-image"
-        loading="lazy"
-      />
+    <article className="suggestion-card">
+      <figure className="suggestion-card-image-container">
+        <img
+          src="/suggestion.jpg"
+          alt="Vizualni prikaz za prijedlog"
+          className="suggestion-card-image"
+          loading="lazy"
+          onClick={goToDetails}
+        />
+      </figure>
 
       <div className="suggestion-card-content">
-        <div className="suggestion-card-title-category">
+        <header className="suggestion-card-title-category">
           <p className="suggestion-card-category">{proposalName} / {locationName}</p>
           <h3 className="suggestion-card-title">{name}</h3>
           <p className="suggestion-card-meta">
-            Status: {status} | Trošak: {formatCurrencyEuroCroatian(estimatedCost)} | Glasovi: {localVoteCount}
+            Trošak: {formatCurrencyEuroCroatian(estimatedCost)} | Glasovi: {localVoteCount}
           </p>
-        </div>
+        </header>
 
         <p className="suggestion-card-paragraph">{shortDescription}</p>
 
         <div className="suggestion-card-user-card">
-          <div className="suggestion-user-thumb"><div className="user-icon-placeholder-card"></div></div>
+          <figure className="suggestion-user-thumb">
+            {fullAvatarUrl ? (
+              <img 
+                src={fullAvatarUrl} 
+                alt={`${authorName} avatar`}
+                className="suggestion-user-avatar-image"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  if (e.target.nextSibling) {
+                    e.target.nextSibling.style.display = 'block';
+                  }
+                }}
+              />
+            ) : null}
+            <div 
+              className="user-icon-suggestion-placeholder-card"
+              style={fullAvatarUrl ? { display: 'none' } : {}}
+            ></div>
+          </figure>
           <div className="suggestion-user-details">
             <span className="suggestion-user-name">{authorName}</span>
-            <span className="suggestion-user-role">Podneseno: {formatDateCroatian(createdAt)}</span>
+            <time dateTime={createdAt} className="suggestion-user-role">Podneseno: {formatDateCroatian(createdAt)}</time>
           </div>
         </div>
       </div>
 
-      <div className="suggestion-card-buttons-group">
+      <footer className="suggestion-card-buttons-group">
         <button onClick={goToDetails} className="suggestion-card-button-primary details-button">
           Detalji
         </button>
@@ -142,7 +175,7 @@ function SuggestionCard({ suggestion, showActions = false, onEdit, onDelete, onV
             </span>
           </Tooltip>
           <span className="vote-count-display">{localVoteCount}</span>
-          {voteError && <span className="vote-error-inline">{voteError}</span>}
+          {voteError && <span className="vote-error-inline" role="alert">{voteError}</span>}
         </div>
 
         {showActions ? (
@@ -161,8 +194,8 @@ function SuggestionCard({ suggestion, showActions = false, onEdit, onDelete, onV
         ) : (
           <div className="suggestion-card-actions-placeholder"></div>
         )}
-      </div>
-    </div>
+      </footer>
+    </article>
   );
 }
 
@@ -172,16 +205,21 @@ SuggestionCard.propTypes = {
     name: PropTypes.string,
     description: PropTypes.string,
     estimatedCost: PropTypes.number,
-    status: PropTypes.number,
+    status: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     createdAt: PropTypes.string,
     proposal: PropTypes.object,
-    author: PropTypes.object,
+    author: PropTypes.shape({
+      id: PropTypes.number,
+      userName: PropTypes.string,
+      avatarUrl: PropTypes.string,
+    }),
     location: PropTypes.object,
     votes: PropTypes.array,
   }).isRequired,
   showActions: PropTypes.bool,
   onEdit: PropTypes.func,
   onDelete: PropTypes.func,
+  onVoteToggled: PropTypes.func,
 };
 
 export default SuggestionCard;

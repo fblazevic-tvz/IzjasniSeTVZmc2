@@ -90,6 +90,7 @@ namespace IzjasniSe.Api.Controllers
         }
 
         [HttpDelete("{suggestionId:int}/{userId:int}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int suggestionId, int userId)
         {
             var ok = await _votes.DeleteAsync(suggestionId, userId);

@@ -11,26 +11,90 @@ namespace IzjasniSe.Api.Services
     public class UserService : IUserService
     {
         private readonly AppDbContext _db;
+        private readonly ILoggedInService _loggednInService;
+        private readonly IFileUploadService _fileUploadService;
         private readonly PasswordHasher<User> _passwordHasher = new();
 
-        public UserService(AppDbContext db)
+        public UserService(AppDbContext db, ILoggedInService loggedInService, IFileUploadService fileUploadService)
         {
             _db = db;
+            _loggednInService = loggedInService;
+            _fileUploadService = fileUploadService;
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<IEnumerable<UserReadDto>> GetAllAsync()
         {
-            return await _db.Users
-                            .Include(u => u.City)
-                            .AsNoTracking()
-                            .ToListAsync();
-        }
+            List<User> foundUsers = await _db.Users
+                .Include(u => u.City)
+                .AsNoTracking()
+                .ToListAsync();
 
-        public async Task<User?> GetByIdAsync(int id)
+            List<UserReadDto> userReadDtoList = new List<UserReadDto>();
+
+            foreach (var user in foundUsers)
+            {
+                UserReadDto userReadDto = new UserReadDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Role = user.Role,
+                    accountStatus = user.AccountStatus,
+                    CreatedAt = user.CreatedAt,
+                    AvatarUrl = user.AvatarUrl
+                };
+
+                userReadDtoList.Add(userReadDto);
+            }
+
+            return userReadDtoList;
+        }
+        private async Task<User?> GetUserEntityByIdAsync(int id)
         {
-            return await _db.Users
+            var currentUserId = _loggednInService.GetCurrentUserId();
+            var isCurrentUserAdmin = _loggednInService.IsCurrentUserAdmin();
+            if (isCurrentUserAdmin || currentUserId == id)
+            {
+                return await _db.Users
                             .Include(u => u.City)
                             .FirstOrDefaultAsync(u => u.Id == id);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<UserReadDto?> GetByIdAsync(int id)
+        {
+            var currentUserId = _loggednInService.GetCurrentUserId();
+            var isCurrentUserAdmin = _loggednInService.IsCurrentUserAdmin();
+
+            if (isCurrentUserAdmin || currentUserId == id)
+            {
+                var user = await _db.Users
+                    .Include(u => u.City)
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(u => u.Id == id);
+
+                if (user == null)
+                {
+                    return null;
+                }
+
+                return new UserReadDto
+                {
+                    Id = user.Id,
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Role = user.Role,
+                    accountStatus = user.AccountStatus,
+                    CreatedAt = user.CreatedAt,
+                    AvatarUrl = user.AvatarUrl
+                };
+            }
+
+            return null;
         }
 
         public async Task<UserReadDto> CreateAsync(UserCreateDto userCreateDto)
@@ -55,8 +119,7 @@ namespace IzjasniSe.Api.Services
                 UserName = entity.UserName,
                 Email = entity.Email,
                 Role = entity.Role,
-                AccountStatus = entity.AccountStatus,
-                CityId = entity.CityId
+                accountStatus = entity.AccountStatus
             };
 
             return result;
@@ -64,7 +127,7 @@ namespace IzjasniSe.Api.Services
 
         public async Task<bool> UpdateAsync(int id, UserUpdateDto userUpdateDto)
         {
-            var existingUser = await GetByIdAsync(id);
+            var existingUser = await GetUserEntityByIdAsync(id);
             if (existingUser == null) return false;
 
             if (!string.IsNullOrEmpty(userUpdateDto.Email))
@@ -104,6 +167,18 @@ namespace IzjasniSe.Api.Services
             return true;
         }
 
+        public async Task<bool> ChangeStatusAsync(int id, UserAccountStatus status)
+        {  
+            var user = await GetUserEntityByIdAsync(id);
+            if (user == null) return false;
+
+            user.AccountStatus = status;
+            user.UpdatedAt = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> CheckUniqueness(string? username, string? email)
         {
             var exists = await _db.Users
@@ -117,6 +192,27 @@ namespace IzjasniSe.Api.Services
         {
             return await _db.Users
                 .AnyAsync(u => u.Id == id && u.Role == UserRole.Moderator);
+        }
+
+        public async Task<bool> UpdateAvatarAsync(int id, string avatarUrl)
+        {
+            var currentUserId = _loggednInService.GetCurrentUserId();
+            if (currentUserId == id) {
+                var user = await GetUserEntityByIdAsync(id);
+                if (user == null) return false;
+
+                if (!string.IsNullOrEmpty(user.AvatarUrl))
+                {
+                    await _fileUploadService.DeleteAvatarAsync(user.AvatarUrl);
+                }
+
+                user.AvatarUrl = avatarUrl;
+                user.UpdatedAt = DateTime.UtcNow;
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
     }
 }

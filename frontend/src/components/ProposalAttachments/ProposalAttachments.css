@@ -1,0 +1,89 @@
+.proposal-attachments {
+    padding: 30px 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.proposal-attachments h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #343a40;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #dee2e6;
+    padding-bottom: 10px;
+}
+
+.attachments-list-container {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.attachments-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.attachment-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 5px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.attachment-item:last-child {
+    border-bottom: none;
+}
+
+.attachment-icon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    color: #495057;
+    margin-top: 2px;
+}
+
+.attachment-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+}
+
+.attachment-link {
+    font-size: 1rem;
+    color: #0d6efd;
+    text-decoration: none;
+    word-break: break-all;
+    font-weight: 500;
+}
+
+.attachment-link:hover {
+    text-decoration: underline;
+}
+
+.attachment-description {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.attachment-meta {
+    font-size: 0.875rem;
+    color: #6c757d;
+}
+
+.attachments-list-container p {
+    color: #6c757d;
+    font-style: italic;
+    text-align: center;
+    padding: 10px;
+}
+
+.error-message {
+    color: #FC2938;
+    text-align: center;
+    padding: 10px;
+}

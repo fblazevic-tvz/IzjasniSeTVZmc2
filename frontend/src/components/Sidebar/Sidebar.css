@@ -1,48 +1,74 @@
 .app-sidebar {
-  width: 230px;
-  background-color: #ffffff;
-  border-right: 1px solid #dee2e6;
-  height: 100%;
-  overflow-y: auto;
-  box-sizing: border-box;
-  flex-shrink: 0;
+    width: 260px;
+    background-color: #FFFFFF;
+    border-right: 1px solid #E5E7EB;
+    height: 100%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    padding: 1rem 0;
+    font-family: inherit;
 }
 
 .sidebar-nav-list {
-  list-style: none;
-  padding: 15px 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .sidebar-nav-list li {
-  margin-bottom: 4px;
+    margin-bottom: 0.25rem;
 }
 
 .sidebar-link {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 20px;
-  color: #495057;
-  text-decoration: none;
-  border-radius: 6px;
-  margin: 0 10px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.875rem 1.5rem;
+    color: #374151;
+    text-decoration: none;
+    border-radius: 8px;
+    margin: 0 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.sidebar-link::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleY(0);
+    width: 4px;
+    height: 24px;
+    background-color: #0F62FE;
+    border-radius: 0 4px 4px 0;
+    transition: transform 0.2s ease;
 }
 
 .sidebar-link:hover {
-  background-color: #eef4ff;
-  color: #0d6efd;
+    background-color: #F3F4F6;
+    color: #111827;
 }
 
 .sidebar-link.active {
-  background-color: #0d6efd;
-  color: #ffffff;
-  font-weight: 600;
+    background-color: rgba(15, 98, 254, 0.08);
+    color: #0F62FE;
+    font-weight: 600;
 }
 
-.sidebar-icon {
-  font-size: 1.2rem !important;
+.sidebar-link.active::before {
+    transform: translateY(-50%) scaleY(1);
+}
+
+.sidebar-link .sidebar-icon {
+    font-size: 1.375rem !important;
+    transition: color 0.2s ease;
+}
+
+.sidebar-link.active .sidebar-icon {
+    color: #0F62FE;
 }

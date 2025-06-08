@@ -39,8 +39,21 @@ namespace IzjasniSe.Api.Controllers
             return Ok(prop);
         }
 
+        [HttpGet("moderator/{moderatorId:int}", Name = "GetProposalByModeratorId")]
+        [Authorize(Roles ="Moderator")]
+        public async Task<ActionResult<IEnumerable<Proposal>>> GetByModeratorId(int moderatorId)
+        {
+            var prop = await _proposals.GetByModeratorIdAsync(moderatorId);
+            if (prop == null || !prop.Any())
+            {
+                _logger.LogWarning("No proposals found for moderator id: {id}", moderatorId);
+                return NotFound();
+            }
+            return Ok(prop);
+        }
+
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Moderator")]
         public async Task<ActionResult<Proposal>> Create([FromBody] ProposalCreateDto proposalCreateDto)
         {
             if (!ModelState.IsValid)
@@ -62,7 +75,7 @@ namespace IzjasniSe.Api.Controllers
         }
 
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Moderator")]
         public async Task<IActionResult> Update(int id, [FromBody] ProposalUpdateDto proposalUpdateDto)
         {
             if (!ModelState.IsValid)
@@ -75,7 +88,7 @@ namespace IzjasniSe.Api.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Moderator")]
         public async Task<IActionResult> Delete(int id)
         {
             var ok = await _proposals.DeleteAsync(id);

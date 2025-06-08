@@ -140,6 +140,12 @@ namespace IzjasniSe.Api.Services
 
         public async Task<bool> DeleteAsync(int suggestionId, int userId)
         {
+            var currentUserId = GetCurrentUserId();
+            if (currentUserId == null || currentUserId != userId)
+            {
+                _logger.LogWarning("Unauthorized delete attempt by user {UserId} for suggestion {SuggestionId}.", currentUserId, suggestionId);
+                return false;
+            }
             var existing = await _db.Votes.FindAsync(suggestionId, userId);
             if (existing == null) return false;
 

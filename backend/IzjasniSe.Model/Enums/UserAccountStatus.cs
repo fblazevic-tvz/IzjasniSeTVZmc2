@@ -2,9 +2,7 @@
 {
     public enum UserAccountStatus
     {
-        PendingVerification,
         Active,
-        Suspended,
         Banned
     }
 }
